@@ -13,7 +13,7 @@ export default [
       sourcemap: true,
     },
     plugins: [peerDepsExternal(), resolve({ extensions: [".js", ".jsx", ".ts", ".tsx"] }), commonjs(), typescript({ tsconfig: "./tsconfig.json" })],
-    external: ["react", "react-dom", "react/jsx-runtime"],
+    external: ["react", "react-dom", "react/jsx-runtime", "lucid-cardano"],
   },
   {
     input: "src/index.ts",
@@ -25,6 +25,7 @@ export default [
         react: "React",
         "react-dom": "ReactDOM",
         "react/jsx-runtime": "React",
+        "lucid-cardano": "LucidCardano",
       },
       sourcemap: true,
     },
