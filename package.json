@@ -4,13 +4,16 @@
   "main": "dist/umd/index.js",
   "module": "dist/esm/index.js",
   "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "rollup -c"
   },
   "keywords": [],
   "type": "module",
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "description": "",
   "dependencies": {
     "react": "^18.3.1",
