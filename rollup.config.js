@@ -13,7 +13,7 @@ export default [
       sourcemap: true,
     },
     plugins: [peerDepsExternal(), resolve({ extensions: [".js", ".jsx", ".ts", ".tsx"] }), commonjs(), typescript({ tsconfig: "./tsconfig.json" })],
-    external: ["react", "react-dom"],
+    external: ["react", "react-dom", "react/jsx-runtime"],
   },
   {
     input: "src/index.ts",
@@ -24,6 +24,7 @@ export default [
       globals: {
         react: "React",
         "react-dom": "ReactDOM",
+        "react/jsx-runtime": "React",
       },
       sourcemap: true,
     },
