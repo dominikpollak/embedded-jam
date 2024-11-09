@@ -1,10 +1,10 @@
-import { useEffect, type FC } from "react";
+import React from "react";
 
 import { Lucid } from "lucid-cardano";
 import { JamOnBreadProvider } from "@jamonbread/sdk";
 
-export const Text: FC = ({}) => {
-  useEffect(() => {
+export const Text: React.FC = () => {
+  React.useEffect(() => {
     (async () => {
       const apiUrl = "https://api.jamonbread.io/api/".replace(/^\/+|\/+$/g, "");
       const wallet = typeof window !== "undefined" ? window.cardano?.["nami"] : undefined;

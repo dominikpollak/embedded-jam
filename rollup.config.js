@@ -33,7 +33,7 @@ export default [
       peerDepsExternal(),
       resolve({ extensions: [".js", ".jsx", ".ts", ".tsx"], browser: true }),
       commonjs(),
-      typescript({ tsconfig: "./tsconfig.json" }),
+      typescript({ tsconfig: "./tsconfig.json", jsx: "react" }),
     ],
     external: ["react", "react-dom"],
   },
