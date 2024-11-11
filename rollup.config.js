@@ -1,8 +1,9 @@
-import resolve from "@rollup/plugin-node-resolve";
 import commonjs from "@rollup/plugin-commonjs";
+import resolve from "@rollup/plugin-node-resolve";
 import typescript from "@rollup/plugin-typescript";
-import peerDepsExternal from "rollup-plugin-peer-deps-external";
 import dts from "rollup-plugin-dts";
+import peerDepsExternal from "rollup-plugin-peer-deps-external";
+import postcss from "rollup-plugin-postcss";
 
 export default [
   {
@@ -12,7 +13,22 @@ export default [
       format: "esm",
       sourcemap: true,
     },
-    plugins: [peerDepsExternal(), resolve({ extensions: [".js", ".jsx", ".ts", ".tsx"] }), commonjs(), typescript({ tsconfig: "./tsconfig.json" })],
+    plugins: [
+      peerDepsExternal(),
+      resolve({ extensions: [".js", ".jsx", ".ts", ".tsx"] }),
+      commonjs(),
+      postcss({
+        config: {
+          path: "./postcss.config.js",
+        },
+        extensions: [".css"],
+        minimize: true,
+        inject: {
+          insertAt: "top",
+        },
+      }),
+      typescript({ tsconfig: "./tsconfig.json" }),
+    ],
     external: ["react", "react-dom", "react/jsx-runtime", "lucid-cardano"],
   },
   {
@@ -33,6 +49,16 @@ export default [
       peerDepsExternal(),
       resolve({ extensions: [".js", ".jsx", ".ts", ".tsx"], browser: true }),
       commonjs(),
+      postcss({
+        config: {
+          path: "./postcss.config.js",
+        },
+        extensions: [".css"],
+        minimize: true,
+        inject: {
+          insertAt: "top",
+        },
+      }),
       typescript({ tsconfig: "./tsconfig.json", jsx: "react" }),
     ],
     external: ["react", "react-dom"],
@@ -44,5 +70,16 @@ export default [
       format: "es",
     },
     plugins: [dts()],
+    external: [/\.css$/],
+  },
+  {
+    input: "src/styles/main.css",
+    output: [{ file: "dist/index.css", format: "es" }],
+    plugins: [
+      postcss({
+        extract: true,
+        minimize: true,
+      }),
+    ],
   },
 ];
