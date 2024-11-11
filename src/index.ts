@@ -1,2 +1,4 @@
 import "./styles/main.css";
-export * from "./components";
+export { NftList } from "./components/nft/NftList";
+export { WalletConnector } from "./components/WalletConnector";
+export { connectTest } from "./utils/connectTest";
