@@ -1,1 +1,1 @@
-export { Text } from "./components/Text";
+export { WalletConnector } from "./components/WalletConnector";
