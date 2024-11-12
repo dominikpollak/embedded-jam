@@ -1,4 +1,3 @@
-import "@nufi/sso-button-react/dist/style.css";
 import React, { useEffect, useState } from "react";
 import { browserName, isMobile, isSafari, isTablet } from "react-device-detect";
 import { SUPPORTED_WALLETS, walletInfos } from "../../constants/wallet";

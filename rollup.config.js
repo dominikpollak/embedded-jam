@@ -1,4 +1,5 @@
 import commonjs from "@rollup/plugin-commonjs";
+import json from "@rollup/plugin-json";
 import resolve from "@rollup/plugin-node-resolve";
 import typescript from "@rollup/plugin-typescript";
 import dts from "rollup-plugin-dts";
@@ -28,6 +29,7 @@ export default [
         },
       }),
       typescript({ tsconfig: "./tsconfig.json" }),
+      json(),
     ],
     external: ["react", "react-dom", "react/jsx-runtime", "lucid-cardano"],
   },
@@ -60,6 +62,7 @@ export default [
         },
       }),
       typescript({ tsconfig: "./tsconfig.json", jsx: "react" }),
+      json(),
     ],
     external: ["react", "react-dom"],
   },
