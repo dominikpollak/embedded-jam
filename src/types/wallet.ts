@@ -38,3 +38,12 @@ export type WalletButtonDataState = {
     username: string | undefined
   ) => void;
 };
+
+export type WalletInfo = {
+  name: string;
+  icon: string;
+  darkIcon?: string;
+  unsuportedBrowsers: string[];
+  hasMobileApp: boolean;
+  extensionUrl: string;
+};
