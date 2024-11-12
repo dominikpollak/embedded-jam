@@ -1,0 +1,228 @@
+import { format } from "date-fns";
+import { useExchangeRates } from "../services/exchangeRates";
+import { usePreferredCurrency } from "../stores/wallet/usePreferredCurrency";
+import { NationalCurrencies } from "../types/currency";
+import { lovelaceToAda, lovelaceToPrice } from "./lovelace";
+
+export const formatUsername = (username: string, type: "short" | "long") => {
+  if (type === "short") {
+    if (username.length < 11) return username;
+
+    return username.slice(0, 8) + "...";
+  } else {
+    if (username.length < 17) return username;
+
+    return username.slice(0, 15) + "...";
+  }
+};
+
+export const formatHash = (
+  hash?: string,
+  trim?: "short" | "shorter" | "normal"
+) => {
+  if (hash === undefined || hash === null) return "";
+  const trimmed = hash.replace("addr_test", "").replace("addr", "");
+
+  if (trim === "shorter") {
+    const text =
+      trimmed.length <= 12
+        ? trimmed
+        : trimmed.substring(0, 4) +
+          "..." +
+          trimmed.substring(trimmed.length - 4);
+    return text;
+  } else if (trim === "short") {
+    const text =
+      trimmed.length <= 12
+        ? trimmed
+        : trimmed.substring(0, 6) +
+          "..." +
+          trimmed.substring(trimmed.length - 6);
+    return text;
+  } else {
+    const text =
+      trimmed.length <= 16
+        ? trimmed
+        : trimmed.substring(0, 8) +
+          "..." +
+          trimmed.substring(trimmed.length - 8);
+    return text;
+  }
+};
+
+export const formatDate = (date: string) => {
+  return new Date(date).toLocaleString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    hour12: true,
+    hour: "numeric",
+    minute: "2-digit",
+  });
+};
+
+export const formatTableDate = (value: string) =>
+  format(new Date(value), "MMM dd y");
+
+export const formatTableTime = (value: string) =>
+  format(new Date(value), "h:mm aa");
+
+export const formatNumber = (
+  value?: number,
+  config: FormatAdaConfig = defaultFormatAdaConfig
+) => {
+  if (!value) return "0";
+  const currencyConfig = config.currency
+    ? {
+        currency: config.currency.toUpperCase(),
+        style: "currency" as const,
+      }
+    : {};
+
+  const isInteger = Number.isInteger(value);
+
+  const precision = isInteger ? 0 : 1;
+
+  return Intl.NumberFormat("en-US", {
+    notation: config.truncatedValues ? "compact" : "standard",
+    maximumSignificantDigits: config.significantDigits,
+    minimumFractionDigits: precision,
+    maximumFractionDigits: precision,
+    ...currencyConfig,
+  }).format(value);
+};
+
+type FormatAdaConfig = {
+  truncatedValues?: boolean;
+  significantDigits?: number;
+  includeSuffix?: boolean;
+  currency?: NationalCurrencies;
+};
+const defaultFormatAdaConfig: FormatAdaConfig = {
+  truncatedValues: true,
+  includeSuffix: true,
+};
+export const formatAda = (
+  lovelace: number | undefined,
+  config?: FormatAdaConfig
+) => {
+  const _config = { ...defaultFormatAdaConfig, ...config };
+  if (lovelace === undefined) return "-";
+
+  const formatted = formatNumber(lovelaceToAda(lovelace), _config);
+  return _config.includeSuffix ? `₳ ${formatted}` : formatted;
+};
+
+export const formatAdaFull = (
+  lovelace: number | undefined,
+  config?: FormatAdaConfig
+) => {
+  const _config = {
+    ...defaultFormatAdaConfig,
+    ...config,
+    truncatedValues: false,
+  };
+  if (lovelace === undefined) return "-";
+
+  const formatted = formatNumber(lovelaceToAda(lovelace), _config);
+  return _config.includeSuffix ? `₳ ${formatted}` : formatted;
+};
+
+export const formatVolume = (
+  value?: number,
+  config: FormatAdaConfig = defaultFormatAdaConfig
+) => {
+  if (!value) return 0;
+  const currencyConfig = config.currency
+    ? {
+        currency: config.currency.toUpperCase(),
+        style: "currency" as const,
+      }
+    : {};
+  return Intl.NumberFormat("en-US", {
+    notation: config.truncatedValues ? "compact" : "standard",
+    maximumSignificantDigits: config.significantDigits,
+    ...currencyConfig,
+  }).format(value);
+};
+
+export const useFormatPrice = () => {
+  const { data: exchangeRates } = useExchangeRates();
+  const { preferredCurrency } = usePreferredCurrency();
+  const formatPrice = (
+    lovelace: number | undefined,
+    config?: FormatAdaConfig
+  ) => {
+    const _config = {
+      ...defaultFormatAdaConfig,
+      ...config,
+      currency: preferredCurrency,
+    };
+    if (lovelace === undefined || exchangeRates === undefined) return "-";
+
+    return formatNumber(
+      lovelaceToPrice(lovelace, preferredCurrency, exchangeRates),
+      _config
+    );
+  };
+  return formatPrice;
+};
+
+const defaultFormatFullPriceConfig: FormatAdaConfig = {
+  truncatedValues: false,
+  significantDigits: 3,
+};
+
+export const useFormatFullPrice = () => {
+  const { data: exchangeRates } = useExchangeRates();
+  const { preferredCurrency } = usePreferredCurrency();
+
+  const formatFullPrice = (
+    lovelace: number | undefined,
+    config?: FormatAdaConfig
+  ) => {
+    const _config = {
+      ...defaultFormatFullPriceConfig,
+      ...config,
+      currency: preferredCurrency,
+    };
+    if (!lovelace || !exchangeRates) return "-";
+
+    return formatNumber(
+      lovelaceToPrice(lovelace, preferredCurrency, exchangeRates),
+      _config
+    );
+  };
+  return formatFullPrice;
+};
+
+export const formatNumberWithCommas = (number: number) => {
+  return number.toLocaleString();
+};
+
+export const formatTimeAgo = (timestamp: string) => {
+  const now = new Date();
+  const date = new Date(timestamp);
+  const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
+
+  if (diffInSeconds < 60) {
+    return `${diffInSeconds}s ago`;
+  } else if (diffInSeconds < 3600) {
+    // less than 1 hour
+    return `${Math.floor(diffInSeconds / 60)}m ago`;
+  } else if (diffInSeconds < 86400) {
+    // less than 1 day
+    return `${Math.floor(diffInSeconds / 3600)}h ago`;
+  } else if (diffInSeconds < 604800) {
+    // less than 1 week
+    return `${Math.floor(diffInSeconds / 86400)}d ago`;
+  } else if (diffInSeconds < 2592000) {
+    // less than 1 month
+    return `${Math.floor(diffInSeconds / 604800)}w ago`;
+  } else if (diffInSeconds < 31536000) {
+    // less than 1 year
+    return `${Math.floor(diffInSeconds / 2592000)}mo ago`;
+  } else {
+    return `${Math.floor(diffInSeconds / 31536000)}y ago`;
+  }
+};
