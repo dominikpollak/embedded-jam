@@ -28,13 +28,17 @@ export const useConnectWallet = () => {
       typeof window !== "undefined"
         ? window?.cardano && window.cardano?.[walletType]
         : undefined;
+    console.log("wallet", wallet);
     const walletApi = await wallet?.enable();
+    console.log("walletApi", walletApi);
     const provider = new JamOnBreadProvider(
       `https://api.jamonbread.io/api/lucid`
     );
-    const lucid = await Lucid.new(provider, "Preprod");
+    const lucid = await Lucid.new(provider, "Mainnet");
+    console.log("lucid", lucid);
     lucid.selectWallet(walletApi as WalletApi);
     const address = await lucid.wallet.address();
+    console.log("address", address);
     const stakeKey = lucid.utils.stakeCredentialOf(address).hash;
     const job = new JobCardano(lucid, apiUrl);
 

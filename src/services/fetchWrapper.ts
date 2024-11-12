@@ -1,4 +1,4 @@
-import axios, { AxiosResponse } from "axios";
+// import axios, { AxiosResponse } from "axios";
 
 type Props = {
   url: string;
@@ -14,7 +14,7 @@ export const customFetchHandler = async ({
   data,
   headers,
   cache = true,
-}: Props): Promise<AxiosResponse> => {
+}: Props): Promise<any> => {
   const headersAndCache = cache
     ? { ...headers }
     : {
@@ -25,27 +25,11 @@ export const customFetchHandler = async ({
       };
 
   try {
-    const res = await axios({
-      url,
+    const res = await fetch(url, {
       method,
-      data,
       headers: headersAndCache,
+      body: JSON.stringify(data),
     });
-    if (res.status == 200) return res;
-    let error = "";
-    if (
-      res.status === 404 &&
-      typeof window !== "undefined" &&
-      window.location.pathname !== "/embed"
-    ) {
-      window.location.href = "/404";
-      return new Promise((resolve, reject) => reject(error));
-    }
-    if (res.status >= 400 && res.status < 500 && res.status !== 404) {
-      error = "Something went wrong with this request";
-    } else if (res.status >= 500) {
-      error = "Something went wrong with the server";
-    }
     return res;
   } catch (error: any) {
     if (

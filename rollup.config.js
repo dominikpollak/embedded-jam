@@ -85,4 +85,18 @@ export default [
       }),
     ],
   },
+  {
+    build: {
+      target: "es2020",
+      rollupOptions: {
+        external: ["node-fetch"],
+      },
+    },
+    optimizeDeps: {
+      esbuildOptions: {
+        target: "es2020",
+      },
+      exclude: ["lucid-cardano"],
+    },
+  },
 ];
