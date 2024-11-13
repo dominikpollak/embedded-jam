@@ -21,6 +21,7 @@ export default [
       resolve({
         alias: {
           buffer: "buffer",
+          process: "process",
         },
         extensions: [".js", ".jsx", ".ts", ".tsx"],
       }),
@@ -42,7 +43,7 @@ export default [
         preferBuiltins: false,
       }),
       nodePolyfills({
-        include: ["buffer"],
+        include: ["buffer", "process"],
       }),
     ],
     external: ["react", "react-dom", "react/jsx-runtime", "lucid-cardano"],
@@ -59,6 +60,7 @@ export default [
         "react/jsx-runtime": "React",
         "lucid-cardano": "LucidCardano",
       },
+      intro: "const global = window;",
       sourcemap: true,
     },
     plugins: [
@@ -66,6 +68,7 @@ export default [
       resolve({
         alias: {
           buffer: "buffer",
+          process: "process",
         },
         extensions: [".js", ".jsx", ".ts", ".tsx"],
       }),
@@ -87,7 +90,7 @@ export default [
         preferBuiltins: false,
       }),
       nodePolyfills({
-        include: ["buffer"],
+        include: ["buffer", "process"],
       }),
     ],
     external: ["react", "react-dom", "react/jsx-runtime", "lucid-cardano"],
