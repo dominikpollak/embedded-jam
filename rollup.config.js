@@ -92,12 +92,7 @@ export default [
         include: ["buffer"],
       }),
       replace({
-        preventAssignment: true,
-        values: {
-          process: JSON.stringify({
-            "process.env.NODE_ENV": JSON.stringify("production"),
-          }),
-        },
+        "process.env.NODE_ENV": JSON.stringify("production"),
       }),
     ],
     external: ["react", "react-dom", "react/jsx-runtime", "lucid-cardano"],
