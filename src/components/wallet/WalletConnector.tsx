@@ -1,3 +1,4 @@
+import { Wallet } from "lucide-react";
 import React, { useEffect } from "react";
 import { useWalletButtonData } from "../../hooks/wallet/useWalletButtonData";
 import { useThemeColors } from "../../stores/useThemeColors";
@@ -35,22 +36,9 @@ export const WalletConnector: React.FC<Props> = ({ textColor, bgColor }) => {
       <Button
         variant="primary"
         onClick={handleClick}
-        label={
-          address ? formatHash(address, "shorter") : "Connect Wallet"
-        }
+        label={address ? formatHash(address, "shorter") : "Connect Wallet"}
         size="md"
-        // leftIcon={
-        //   disabledExt
-        //     ? ""
-        //     : walletButtonData.some(
-        //         (obj) => obj.address === address && obj.url
-        //       ) && !userProfileImageObject?.url.includes("ipfs")
-        //     ? assetUrls.getThumbnail(userProfileImageObject?.url || "")
-        //     : theme !== "light" &&
-        //       walletInfos[walletType as WalletType].darkIcon
-        //     ? walletInfos[walletType as WalletType].darkIcon
-        //     : walletInfos[walletType as WalletType].icon
-        // }
+        leftIcon={<Wallet size={20} color={bgColor} />}
       />
     </>
   );

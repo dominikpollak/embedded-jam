@@ -1,6 +1,6 @@
 {
   "name": "jam-lib-embed",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "main": "dist/umd/index.js",
   "module": "dist/esm/index.js",
   "types": "dist/index.d.ts",
@@ -42,6 +42,7 @@
   "dependencies": {
     "@jamonbread/sdk": "^1.2.4",
     "date-fns": "^4.1.0",
+    "lucide-react": "^0.456.0",
     "query-string": "^9.1.1",
     "react-cookie": "^7.2.2",
     "react-device-detect": "^2.2.3",
