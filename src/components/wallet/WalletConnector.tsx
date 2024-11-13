@@ -13,8 +13,8 @@ import Dropdown from "../global/Dropdown";
 import ConnectWalletModal from "./ConnectWalletModal";
 
 interface Props {
-  textColor: string;
-  bgColor: string;
+  textColor?: string;
+  bgColor?: string;
 }
 
 export const WalletConnector: React.FC<Props> = ({ textColor, bgColor }) => {
@@ -77,8 +77,10 @@ export const WalletConnector: React.FC<Props> = ({ textColor, bgColor }) => {
   }, [address, walletApi]);
 
   useEffect(() => {
-    setBgColor(bgColor);
-    setTextColor(textColor);
+    if (textColor && bgColor) {
+      setBgColor(bgColor);
+      setTextColor(textColor);
+    }
   }, [textColor, bgColor]);
 
   return (
