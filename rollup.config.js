@@ -1,9 +1,10 @@
 import commonjs from "@rollup/plugin-commonjs";
 import json from "@rollup/plugin-json";
-import resolve from "@rollup/plugin-node-resolve";
+import resolve, { nodeResolve } from "@rollup/plugin-node-resolve";
 import typescript from "@rollup/plugin-typescript";
 import dts from "rollup-plugin-dts";
 import peerDepsExternal from "rollup-plugin-peer-deps-external";
+import nodePolyfills from "rollup-plugin-polyfill-node";
 import postcss from "rollup-plugin-postcss";
 
 export default [
@@ -13,10 +14,16 @@ export default [
       dir: "dist/esm",
       format: "esm",
       sourcemap: true,
+      intro: "const global = window;",
     },
     plugins: [
       peerDepsExternal(),
-      resolve({ extensions: [".js", ".jsx", ".ts", ".tsx"] }),
+      resolve({
+        alias: {
+          buffer: "buffer",
+        },
+        extensions: [".js", ".jsx", ".ts", ".tsx"],
+      }),
       commonjs(),
       postcss({
         config: {
@@ -30,6 +37,13 @@ export default [
       }),
       typescript({ tsconfig: "./tsconfig.json" }),
       json(),
+      nodeResolve({
+        browser: true,
+        preferBuiltins: false,
+      }),
+      nodePolyfills({
+        include: ["buffer"],
+      }),
     ],
     external: ["react", "react-dom", "react/jsx-runtime", "lucid-cardano"],
   },
@@ -45,11 +59,17 @@ export default [
         "react/jsx-runtime": "React",
         "lucid-cardano": "LucidCardano",
       },
+      intro: "const global = window;",
       sourcemap: true,
     },
     plugins: [
       peerDepsExternal(),
-      resolve({ extensions: [".js", ".jsx", ".ts", ".tsx"], browser: true }),
+      resolve({
+        alias: {
+          buffer: "buffer",
+        },
+        extensions: [".js", ".jsx", ".ts", ".tsx"],
+      }),
       commonjs(),
       postcss({
         config: {
@@ -61,10 +81,17 @@ export default [
           insertAt: "top",
         },
       }),
-      typescript({ tsconfig: "./tsconfig.json", jsx: "react" }),
+      typescript({ tsconfig: "./tsconfig.json" }),
       json(),
+      nodeResolve({
+        browser: true,
+        preferBuiltins: false,
+      }),
+      nodePolyfills({
+        include: ["buffer"],
+      }),
     ],
-    external: ["react", "react-dom"],
+    external: ["react", "react-dom", "react/jsx-runtime", "lucid-cardano"],
   },
   {
     input: "src/index.ts",
