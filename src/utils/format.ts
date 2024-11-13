@@ -2,7 +2,7 @@ import { format } from "date-fns";
 import { useExchangeRates } from "../services/exchangeRates";
 import { usePreferredCurrency } from "../stores/wallet/usePreferredCurrency";
 import { NationalCurrencies } from "../types/currency";
-import { lovelaceToAda, lovelaceToPrice } from "./lovelace";
+import { lovelaceToPrice } from "./lovelace";
 
 export const formatUsername = (username: string, type: "short" | "long") => {
   if (type === "short") {
@@ -95,6 +95,23 @@ export const formatString = (
   )}`;
 };
 
+export const formatNumberWithSuffix = (
+  num: number,
+  removeUnusedZeroes?: boolean,
+  numberOfDecimals?: number
+): string => {
+  switch (true) {
+    case num >= 1e9:
+      return (num / 1e9).toFixed(numberOfDecimals ?? 2) + "B";
+    case num >= 1e6:
+      return (num / 1e6).toFixed(numberOfDecimals ?? 2) + "M";
+    case num >= 1e3:
+      return (num / 1e3).toFixed(numberOfDecimals ?? 2) + "k";
+    default:
+      return num.toFixed(removeUnusedZeroes ? 0 : 2) + "";
+  }
+};
+
 export const formatTableDate = (value: string) =>
   format(new Date(value), "MMM dd y");
 
@@ -135,31 +152,6 @@ type FormatAdaConfig = {
 const defaultFormatAdaConfig: FormatAdaConfig = {
   truncatedValues: true,
   includeSuffix: true,
-};
-export const formatAda = (
-  lovelace: number | undefined,
-  config?: FormatAdaConfig
-) => {
-  const _config = { ...defaultFormatAdaConfig, ...config };
-  if (lovelace === undefined) return "-";
-
-  const formatted = formatNumber(lovelaceToAda(lovelace), _config);
-  return _config.includeSuffix ? `₳ ${formatted}` : formatted;
-};
-
-export const formatAdaFull = (
-  lovelace: number | undefined,
-  config?: FormatAdaConfig
-) => {
-  const _config = {
-    ...defaultFormatAdaConfig,
-    ...config,
-    truncatedValues: false,
-  };
-  if (lovelace === undefined) return "-";
-
-  const formatted = formatNumber(lovelaceToAda(lovelace), _config);
-  return _config.includeSuffix ? `₳ ${formatted}` : formatted;
 };
 
 export const formatVolume = (

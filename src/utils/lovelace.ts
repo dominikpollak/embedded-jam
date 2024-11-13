@@ -1,26 +1,32 @@
 import { ExchangeRates, NationalCurrencies } from "../types/currency";
+import { formatNumberWithSuffix } from "./format";
 
-export const adaToLovelace = (value: number) => {
-  return Math.round(value * 1_000_000);
+export const lovelaceToAda = (lovelace: number): string => {
+  const ada = lovelace / 1e6;
+
+  return `₳ ${formatNumberWithSuffix(ada)}`;
 };
-export const lovelaceToAda = (value: number) => {
-  return value / 1_000_000;
+
+const lovelaceToAdaWithoutSuffix = (lovelace: number): number => {
+  return lovelace / 1e6;
 };
+
 export const lovelaceToPrice = (
   value: number,
   targetCurrency: NationalCurrencies,
   exchangeRates: ExchangeRates
 ): number | undefined => {
-  const ada = lovelaceToAda(value);
+  const ada = lovelaceToAdaWithoutSuffix(value);
   return exchangeRates ? ada * exchangeRates[targetCurrency] : undefined;
 };
+
 export const priceToLovelace = (
   value: number,
   targetCurrency: NationalCurrencies,
   exchangeRates: ExchangeRates | undefined
 ): number | undefined => {
   return exchangeRates
-    ? adaToLovelace(value / exchangeRates[targetCurrency])
+    ? lovelaceToAdaWithoutSuffix(value / exchangeRates[targetCurrency])
     : undefined;
 };
 export const priceOrAdaToLovelace = (
@@ -28,7 +34,7 @@ export const priceOrAdaToLovelace = (
   targetCurrency: NationalCurrencies | "ada",
   exchangeRates: ExchangeRates | undefined
 ): number | undefined => {
-  if (targetCurrency === "ada") return adaToLovelace(value);
+  if (targetCurrency === "ada") return lovelaceToAdaWithoutSuffix(value);
   if (exchangeRates === undefined) return undefined;
   return priceToLovelace(value, targetCurrency, exchangeRates);
 };

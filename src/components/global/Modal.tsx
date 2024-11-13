@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from "react";
+import { useThemeColors } from "../../stores/useThemeColors";
 
 interface Props {
   onClose: () => void;
@@ -19,6 +20,7 @@ const Modal: React.FC<Props> = ({
   maxWidth,
   hideClose,
 }) => {
+  const { bgColor, textColor } = useThemeColors();
   const modalRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -76,6 +78,8 @@ const Modal: React.FC<Props> = ({
           height: minHeight,
           maxWidth: maxWidth || "400px",
           maxHeight: maxHeight,
+          backgroundColor: bgColor,
+          color: textColor,
         }}
         className="thin-scrollbar fixed left-1/2 top-1/2 z-50 -translate-x-1/2 -translate-y-1/2 overflow-y-auto rounded-xl bg-background p-3 md:p-5"
         onClick={(e) => e.stopPropagation()}

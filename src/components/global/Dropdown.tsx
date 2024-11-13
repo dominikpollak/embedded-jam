@@ -189,10 +189,6 @@ const Dropdown: React.FC<DropdownProps> = ({
       onMouseLeave={handleClose}
       ref={wrapperRef}
       onKeyDown={handleKeyDown}
-      style={{
-        color: textColor,
-        backgroundColor: bgColor,
-      }}
     >
       <button
         ref={triggerRef}
@@ -200,6 +196,10 @@ const Dropdown: React.FC<DropdownProps> = ({
         className={`flex items-center gap-1 ${triggerClassName}`}
         aria-haspopup="menu"
         aria-expanded={isOpen}
+        style={{
+          color: textColor,
+          backgroundColor: bgColor,
+        }}
       >
         <span className={`text-sm`}>{label}</span>
         {!hideChevron && (
@@ -226,6 +226,8 @@ const Dropdown: React.FC<DropdownProps> = ({
           } z-20 rounded-lg border border-border bg-background text-sm shadow`}
           style={{
             width: `${width}`,
+            color: textColor,
+            backgroundColor: bgColor,
           }}
         >
           {options
