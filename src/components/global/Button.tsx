@@ -1,9 +1,10 @@
 import type { ReactNode } from "react";
 import React from "react";
+import { useThemeColors } from "../../stores/useThemeColors";
 
 type Props = {
   size: "xs" | "sm" | "md" | "lg" | "xl";
-  variant: "primary" | "secondary" | "tertiary" | "purple";
+  variant: "primary" | "secondary" | "tertiary";
   label?: ReactNode;
   href?: string;
   rightIcon?: React.ReactNode;
@@ -24,6 +25,8 @@ const Button: React.FC<Props> = ({
   disabled,
   onClick,
 }) => {
+  const { bgColor, textColor } = useThemeColors();
+
   const sizeClasses = {
     xs: "py-1 px-1 text-[12px]",
     sm: "py-2 px-3 text-[13px]",
@@ -32,12 +35,22 @@ const Button: React.FC<Props> = ({
     xl: "py-3 px-5 text-lg",
   };
 
-  const variantClasses = {
-    primary: "bg-primary text-white border-2 border-primary",
-    secondary:
-      "bg-secondaryBg text-secondaryText border-2 border-secondaryText",
-    tertiary: "bg-background border border-border",
-    purple: "bg-gradient-to-b from-purple-500 to-purple-700 text-white",
+  const variantStyles = {
+    primary: {
+      backgroundColor: textColor,
+      color: bgColor,
+      border: `2px solid ${textColor}`,
+    },
+    secondary: {
+      backgroundColor: "transparent",
+      color: textColor,
+      border: `2px solid ${textColor}`,
+    },
+    tertiary: {
+      backgroundColor: "transparent",
+      color: textColor,
+      border: `2px solid ${textColor}`,
+    },
   };
 
   const commonClasses =
@@ -47,7 +60,8 @@ const Button: React.FC<Props> = ({
     return (
       <a
         href={href}
-        className={`${commonClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${className}`}
+        className={`${commonClasses} ${sizeClasses[size]} ${className}`}
+        style={variantStyles[variant]}
       >
         <span>{leftIcon}</span>
         {label && <span>{label}</span>}
@@ -58,8 +72,9 @@ const Button: React.FC<Props> = ({
   return (
     <button
       onClick={onClick}
-      className={`${commonClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${className}`}
+      className={`${commonClasses} ${sizeClasses[size]} ${className}`}
       disabled={disabled}
+      style={variantStyles[variant]}
     >
       <span className={`${leftIcon && label && "mr-2"}`}>{leftIcon}</span>
       {label && <span>{label}</span>}
