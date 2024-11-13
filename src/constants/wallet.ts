@@ -17,7 +17,7 @@ export const SUPPORTED_WALLETS: readonly WalletType[] = [
 export const walletInfos: Record<WalletType, WalletInfo> = {
   nami: {
     name: "nami",
-    icon: "/images/nami.svg",
+    icon: "../resources/images/nami.svg",
     unsuportedBrowsers: ["firefox", "safari"],
     hasMobileApp: false,
     extensionUrl:
@@ -25,7 +25,7 @@ export const walletInfos: Record<WalletType, WalletInfo> = {
   },
   flint: {
     name: "flint",
-    icon: "/images/flint.png",
+    icon: "../resources/images/flint.png",
     unsuportedBrowsers: ["firefox", "safari"],
     hasMobileApp: true,
     extensionUrl: `${
@@ -45,7 +45,7 @@ export const walletInfos: Record<WalletType, WalletInfo> = {
   },
   yoroi: {
     name: "yoroi",
-    icon: "/images/yoroi.svg",
+    icon: "../resources/images/yoroi.svg",
     unsuportedBrowsers: ["safari"],
     hasMobileApp: true,
     extensionUrl: `${
@@ -67,8 +67,8 @@ export const walletInfos: Record<WalletType, WalletInfo> = {
   },
   begin: {
     name: "begin",
-    icon: "/images/begin_dark.svg",
-    darkIcon: "/images/begin_light.svg",
+    icon: "../resources/images/begin_dark.svg",
+    darkIcon: "../resources/images/begin_light.svg",
     unsuportedBrowsers: ["firefox", "safari"],
     hasMobileApp: true,
     extensionUrl: isAndroid
@@ -79,7 +79,7 @@ export const walletInfos: Record<WalletType, WalletInfo> = {
   },
   tokeo: {
     name: "tokeo",
-    icon: "/images/tokeo.png",
+    icon: "../resources/images/tokeo.png",
     unsuportedBrowsers: ["firefox", "safari", "chrome", "brave", "opera"],
     hasMobileApp: true,
     extensionUrl:
@@ -87,7 +87,7 @@ export const walletInfos: Record<WalletType, WalletInfo> = {
   },
   nufiSnap: {
     name: "metamask",
-    icon: "/images/metamask.svg",
+    icon: "../resources/images/metamask.svg",
     unsuportedBrowsers: ["safari"],
     hasMobileApp: true,
     extensionUrl: `${
@@ -102,7 +102,7 @@ export const walletInfos: Record<WalletType, WalletInfo> = {
   },
   lace: {
     name: "lace",
-    icon: "/images/lacelogo.svg",
+    icon: "../resources/images/lacelogo.svg",
     unsuportedBrowsers: ["firefox", "safari"],
     hasMobileApp: false,
     extensionUrl:
@@ -110,8 +110,8 @@ export const walletInfos: Record<WalletType, WalletInfo> = {
   },
   vespr: {
     name: "vespr",
-    icon: "/images/vespr-dark.png",
-    darkIcon: "/images/vespr-light.png",
+    icon: "../resources/images/vespr-dark.png",
+    darkIcon: "../resources/images/vespr-light.png",
     unsuportedBrowsers: ["safari", "firefox"],
     hasMobileApp: true,
     extensionUrl: `
@@ -128,7 +128,7 @@ export const walletInfos: Record<WalletType, WalletInfo> = {
   },
   eternl: {
     name: "eternl",
-    icon: "/images/eternl-small.png",
+    icon: "../resources/images/eternl-small.png",
     unsuportedBrowsers: ["firefox", "safari"],
     hasMobileApp: true,
     extensionUrl: ` ${
@@ -149,7 +149,7 @@ export const walletInfos: Record<WalletType, WalletInfo> = {
   },
   nufi: {
     name: "nufi",
-    icon: "/images/nufi-small.svg",
+    icon: "../resources/images/nufi-small.svg",
     unsuportedBrowsers: ["firefox", "safari"],
     hasMobileApp: false,
     extensionUrl:
@@ -157,7 +157,7 @@ export const walletInfos: Record<WalletType, WalletInfo> = {
   },
   nufiSSO: {
     name: "nufiSSO",
-    icon: "/images/nufi-small.svg",
+    icon: "../resources/images/nufi-small.svg",
     unsuportedBrowsers: ["firefox", "safari"],
     hasMobileApp: false,
     extensionUrl:
@@ -165,7 +165,7 @@ export const walletInfos: Record<WalletType, WalletInfo> = {
   },
   gerowallet: {
     name: "gero",
-    icon: "/images/gero.svg",
+    icon: "../resources/images/gero.svg",
     unsuportedBrowsers: ["firefox", "safari"],
     hasMobileApp: true,
     extensionUrl: ` ${

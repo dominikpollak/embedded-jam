@@ -1,6 +1,6 @@
 {
   "name": "jam-lib-embed",
-  "version": "1.1.6",
+  "version": "1.1.8",
   "main": "dist/umd/index.js",
   "module": "dist/esm/index.js",
   "types": "dist/index.d.ts",
@@ -25,7 +25,9 @@
     "@rollup/plugin-commonjs": "^28.0.1",
     "@rollup/plugin-json": "^6.1.0",
     "@rollup/plugin-node-resolve": "^15.3.0",
+    "@rollup/plugin-replace": "^6.0.1",
     "@rollup/plugin-typescript": "^12.1.1",
+    "@types/lodash": "^4.17.13",
     "@types/react": ">=18.3.12",
     "@types/react-dom": ">=18.3.1",
     "autoprefixer": "^10.4.20",
@@ -43,8 +45,10 @@
   "dependencies": {
     "@jamonbread/sdk": "^1.2.4",
     "@rollup/plugin-inject": "^5.0.5",
+    "@rollup/plugin-url": "^8.0.2",
     "buffer": "^6.0.3",
     "date-fns": "^4.1.0",
+    "lodash": "^4.17.21",
     "lucide-react": "^0.456.0",
     "query-string": "^9.1.1",
     "react-cookie": "^7.2.2",

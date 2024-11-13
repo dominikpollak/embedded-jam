@@ -1,6 +1,7 @@
 import commonjs from "@rollup/plugin-commonjs";
 import json from "@rollup/plugin-json";
 import resolve, { nodeResolve } from "@rollup/plugin-node-resolve";
+import replace from "@rollup/plugin-replace";
 import typescript from "@rollup/plugin-typescript";
 import dts from "rollup-plugin-dts";
 import peerDepsExternal from "rollup-plugin-peer-deps-external";
@@ -21,7 +22,6 @@ export default [
       resolve({
         alias: {
           buffer: "buffer",
-          process: "process",
         },
         extensions: [".js", ".jsx", ".ts", ".tsx"],
       }),
@@ -43,7 +43,7 @@ export default [
         preferBuiltins: false,
       }),
       nodePolyfills({
-        include: ["buffer", "process"],
+        include: ["buffer"],
       }),
     ],
     external: ["react", "react-dom", "react/jsx-runtime", "lucid-cardano"],
@@ -68,7 +68,6 @@ export default [
       resolve({
         alias: {
           buffer: "buffer",
-          process: "process",
         },
         extensions: [".js", ".jsx", ".ts", ".tsx"],
       }),
@@ -90,7 +89,15 @@ export default [
         preferBuiltins: false,
       }),
       nodePolyfills({
-        include: ["buffer", "process"],
+        include: ["buffer"],
+      }),
+      replace({
+        preventAssignment: true,
+        values: {
+          process: JSON.stringify({
+            "process.env.NODE_ENV": JSON.stringify("production"),
+          }),
+        },
       }),
     ],
     external: ["react", "react-dom", "react/jsx-runtime", "lucid-cardano"],
