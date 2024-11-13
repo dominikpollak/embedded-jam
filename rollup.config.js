@@ -59,7 +59,6 @@ export default [
         "react/jsx-runtime": "React",
         "lucid-cardano": "LucidCardano",
       },
-      intro: "const global = window;",
       sourcemap: true,
     },
     plugins: [
