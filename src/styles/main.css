@@ -17,8 +17,8 @@
 
   :root[jam-theme="gray"] {
     --text: #fff;
-    --background: #4a4e57;
-    --border: #52575a;
+    --background: #22272e;
+    --border: #686d70;
     --grayText: #9fa3a8;
     --scrollbar: #ffffff87;
     --shimmer: #ffffff0d;
@@ -49,5 +49,62 @@
     --redText: #f04438;
     --yellowText: #f8b942;
     --greenText: #18c852;
+  }
+
+  h1 {
+    @media screen and (min-width: 768px) {
+      font-size: 34px;
+    }
+    font-size: 26px;
+    font-weight: 600;
+  }
+
+  h2 {
+    @media screen and (min-width: 768px) {
+      font-size: 24px;
+    }
+    font-size: 20px;
+    font-weight: 600;
+  }
+
+  h3 {
+    @media screen and (min-width: 768px) {
+      font-size: 18px;
+    }
+    font-size: 16px;
+    font-weight: 600;
+  }
+
+  .hide-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+
+  .thin-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: var(--scrollbar) transparent;
+
+    ::-webkit-scrollbar {
+      width: 5px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: transparent;
+      border-radius: 10px;
+      margin-block: 5px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--scrollbar);
+      opacity: 0.5;
+      border-radius: 10px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--scrollbar);
+    }
   }
 }

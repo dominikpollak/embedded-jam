@@ -182,7 +182,7 @@ const Dropdown: React.FC<DropdownProps> = ({
 
   return (
     <div
-      className="relative text-text font-medium"
+      className="relative w-fit rounded-lg text-text font-medium"
       onMouseEnter={handleOpen}
       onMouseLeave={handleClose}
       ref={wrapperRef}
@@ -191,7 +191,7 @@ const Dropdown: React.FC<DropdownProps> = ({
       <button
         ref={triggerRef}
         onClick={toggleDropdown}
-        className={`flex items-center bg-background gap-1 ${triggerClassName}`}
+        className={`flex items-center rounded-lg bg-background text-text gap-1 ${triggerClassName}`}
         aria-haspopup="menu"
         aria-expanded={isOpen}
       >

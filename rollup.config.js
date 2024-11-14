@@ -3,6 +3,7 @@ import json from "@rollup/plugin-json";
 import resolve, { nodeResolve } from "@rollup/plugin-node-resolve";
 import replace from "@rollup/plugin-replace";
 import typescript from "@rollup/plugin-typescript";
+import url from "@rollup/plugin-url";
 import dts from "rollup-plugin-dts";
 import peerDepsExternal from "rollup-plugin-peer-deps-external";
 import nodePolyfills from "rollup-plugin-polyfill-node";
@@ -45,6 +46,7 @@ export default [
       nodePolyfills({
         include: ["buffer"],
       }),
+      url(),
     ],
     external: ["react", "react-dom", "react/jsx-runtime", "lucid-cardano"],
   },
@@ -95,6 +97,7 @@ export default [
         "process.env.NODE_ENV": JSON.stringify("production"),
         preventAssignment: true,
       }),
+      url(),
     ],
     external: ["react", "react-dom", "react/jsx-runtime", "lucid-cardano"],
   },

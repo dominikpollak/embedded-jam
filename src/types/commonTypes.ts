@@ -7,3 +7,8 @@ export type DropdownOption =
       onClick?: any;
     }
   | undefined;
+
+export type Paginate = {
+  cursor: string;
+  hasNextPage: boolean;
+};

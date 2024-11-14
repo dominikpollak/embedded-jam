@@ -1,9 +1,7 @@
-import type { FC } from "react";
-
 import { Check, Copy as CopyIcon } from "lucide-react";
 
 import React from "react";
-import { useThemeColors } from "../../stores/useThemeColors";
+import { colors } from "../../constants/colors";
 
 interface CopyComponentProps {
   size?: number;
@@ -11,14 +9,13 @@ interface CopyComponentProps {
   className?: string;
 }
 
-const CopyButton: FC<CopyComponentProps> = ({
+const CopyButton: React.FC<CopyComponentProps> = ({
   size = 13,
   copyText,
   className,
 }) => {
   const [copied, setCopied] = React.useState<boolean>(false);
   const [alreadyCopied, setAlreadyCopied] = React.useState<boolean>(false);
-  const { textColor } = useThemeColors();
 
   const handleCopy = () => {
     navigator.clipboard.writeText(copyText || "");
@@ -37,7 +34,7 @@ const CopyButton: FC<CopyComponentProps> = ({
       size={size}
       cursor="pointer"
       onClick={handleCopy}
-      color={alreadyCopied ? "var(--border)" : textColor}
+      color={alreadyCopied ? colors.border : colors.text}
     />
   );
 };

@@ -8,8 +8,6 @@ module.exports = {
         background: "var(--background)",
         primary: "var(--primary)",
         secondary: "var(--secondary)",
-        secondaryText: "var(--secondaryText)",
-        secondaryBg: "var(--secondaryBg)",
         darker: "var(--darker)",
         border: "var(--border)",
         grayText: "var(--grayText)",

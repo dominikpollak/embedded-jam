@@ -1,4 +1,6 @@
+import { X } from "lucide-react";
 import React, { useEffect, useRef } from "react";
+import { colors } from "../../constants/colors";
 
 interface Props {
   onClose: () => void;
@@ -86,7 +88,9 @@ const Modal: React.FC<Props> = ({
             onClick={onClose}
             className="absolute right-3 top-3 cursor-pointer md:right-5 md:top-5"
           >
-            <span aria-hidden="true">X</span>
+            <span aria-hidden="true">
+              <X color={colors.text} />
+            </span>
           </button>
         )}
 

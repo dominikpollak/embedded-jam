@@ -5,6 +5,7 @@ import { useConnectWallet } from "../../hooks/wallet/useConnectWallet";
 import { useWalletStore } from "../../stores/wallet/walletStore";
 import { WalletType } from "../../types/wallet";
 import Modal from "../global/Modal";
+import { SpinningLoader } from "../global/SpinningLoader";
 import WalletOption from "./WalletOption";
 
 type Props = {
@@ -115,8 +116,7 @@ const ConnectWalletModal: React.FC<Props> = ({ onClose }) => {
         onClose={onClose}
       >
         <div className="flex justify-center p-5 pt-7">
-          {/* <SpinningLoader /> */}
-          loading
+          <SpinningLoader />
         </div>
       </Modal>
     );

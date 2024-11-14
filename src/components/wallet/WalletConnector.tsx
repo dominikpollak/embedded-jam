@@ -95,7 +95,7 @@ export const WalletConnector: React.FC<Props> = ({ textColor, bgColor }) => {
           id="wallet-dropdown"
           hideChevron
           label={
-            <div className="box-border flex min-w-fit max-w-fit items-center justify-between rounded-[8px] border-2 border-secondaryText bg-secondaryBg px-4 py-2 text-sm font-medium text-secondaryText duration-150 hover:scale-[101%] active:scale-[98%] disabled:cursor-not-allowed disabled:opacity-50">
+            <div className="box-border flex min-w-fit max-w-fit items-center justify-between rounded-lg px-4 py-2 text-sm font-medium text-secondaryText duration-150 border border-text disabled:cursor-not-allowed disabled:opacity-50">
               <span className="mr-2">
                 <img
                   className="h-[20px] min-h-[20px] w-[20px] min-w-[20px] shrink-0"
@@ -105,7 +105,7 @@ export const WalletConnector: React.FC<Props> = ({ textColor, bgColor }) => {
                   width={20}
                 />
               </span>
-              <span>{formatString(address?.split("1")[1] ?? "", "long")}</span>
+              <span>{formatString(address?.split("1")[1] ?? "", "short")}</span>
             </div>
           }
           options={[
