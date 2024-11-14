@@ -1,8 +1,7 @@
 import { Unlink, Wallet } from "lucide-react";
-import React, { useEffect } from "react";
+import React from "react";
 import { walletInfos } from "../../constants/wallet";
 import { useConnectWallet } from "../../hooks/wallet/useConnectWallet";
-import { useThemeColors } from "../../stores/useThemeColors";
 import { useWalletStore } from "../../stores/wallet/walletStore";
 import { formatString, lovelaceToAda } from "../../utils/format";
 import { getWalletBalance } from "../../utils/wallet/getWalletBalance";
@@ -19,14 +18,13 @@ interface Props {
 export const WalletConnector: React.FC<Props> = ({ textColor, bgColor }) => {
   WalletConnector.displayName = "WalletConnector";
   const { address, walletType, setWalletState, walletApi } = useWalletStore();
-  const { setBgColor, setTextColor } = useThemeColors();
   const [showWalletModal, setShowWalletModal] = React.useState(false);
   const { disconnect } = useConnectWallet();
 
   const walletChannel = new BroadcastChannel("wallet_channel");
   const [balance, setBalance] = React.useState(0);
 
-  useEffect(() => {
+  React.useEffect(() => {
     const handleMessage = (event: any) => {
       const { type, payload } = event.data;
       switch (type) {
@@ -53,7 +51,7 @@ export const WalletConnector: React.FC<Props> = ({ textColor, bgColor }) => {
     };
   }, [disconnect]);
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (address && walletType) {
       walletChannel.postMessage({
         type: "WALLET_CONNECTED",
@@ -62,7 +60,7 @@ export const WalletConnector: React.FC<Props> = ({ textColor, bgColor }) => {
     }
   }, [address, walletType]);
 
-  useEffect(() => {
+  React.useEffect(() => {
     const getBalance = async () => {
       const balance = await getWalletBalance(walletApi!);
       if (balance !== undefined) {
@@ -75,12 +73,9 @@ export const WalletConnector: React.FC<Props> = ({ textColor, bgColor }) => {
     }
   }, [address, walletApi]);
 
-  useEffect(() => {
-    if (textColor && bgColor) {
-      setBgColor(bgColor);
-      setTextColor(textColor);
-    }
-  }, [textColor, bgColor]);
+  React.useLayoutEffect(() => {
+    document.documentElement.setAttribute("jam-theme", "gray");
+  }, []);
 
   return (
     <>

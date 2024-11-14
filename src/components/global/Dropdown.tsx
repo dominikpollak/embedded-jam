@@ -2,7 +2,6 @@ import { ChevronDown } from "lucide-react";
 import type { ReactNode } from "react";
 import React from "react";
 import { useDropdownState } from "../../stores/states/useDropdownState";
-import { useThemeColors } from "../../stores/useThemeColors";
 import { DropdownOption } from "../../types/commonTypes";
 
 interface DropdownProps {
@@ -28,7 +27,6 @@ const Dropdown: React.FC<DropdownProps> = ({
   closeOnSelect = false,
   forceVerticalPosition,
 }) => {
-  const { bgColor, textColor } = useThemeColors();
   const { openId, setOpenId } = useDropdownState();
   const [isOpen, setIsOpen] = React.useState(false);
   const [isClicked, setIsClicked] = React.useState(false);
@@ -184,7 +182,7 @@ const Dropdown: React.FC<DropdownProps> = ({
 
   return (
     <div
-      className="relative font-medium"
+      className="relative text-text font-medium"
       onMouseEnter={handleOpen}
       onMouseLeave={handleClose}
       ref={wrapperRef}
@@ -193,13 +191,9 @@ const Dropdown: React.FC<DropdownProps> = ({
       <button
         ref={triggerRef}
         onClick={toggleDropdown}
-        className={`flex items-center gap-1 ${triggerClassName}`}
+        className={`flex items-center bg-background gap-1 ${triggerClassName}`}
         aria-haspopup="menu"
         aria-expanded={isOpen}
-        style={{
-          color: textColor,
-          backgroundColor: bgColor,
-        }}
       >
         <span className={`text-sm`}>{label}</span>
         {!hideChevron && (
@@ -223,11 +217,9 @@ const Dropdown: React.FC<DropdownProps> = ({
             verticalPosition === "down"
               ? "top-[calc(100%+3px)]"
               : "bottom-[calc(100%+3px)]"
-          } z-20 rounded-lg border border-border bg-background text-sm shadow`}
+          } z-20 rounded-lg text-text border border-border bg-background text-sm shadow`}
           style={{
             width: `${width}`,
-            color: textColor,
-            backgroundColor: bgColor,
           }}
         >
           {options

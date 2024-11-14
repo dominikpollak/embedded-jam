@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { browserName, isMobile, isSafari, isTablet } from "react-device-detect";
 import { SUPPORTED_WALLETS, walletInfos } from "../../constants/wallet";
 import { useConnectWallet } from "../../hooks/wallet/useConnectWallet";
@@ -14,14 +14,18 @@ type Props = {
 const ConnectWalletModal: React.FC<Props> = ({ onClose }) => {
   const { connect } = useConnectWallet();
   const { walletType } = useWalletStore();
-  const [walletLoading, setWalletLoading] = useState(false);
-  const [isMetamaskInstalled, setIsMetamaskInstalled] = useState(false);
-  const [installedWallets, setInstalledWallets] = useState<WalletType[]>([]);
-  const [availableWallets, setAvailableWallets] = useState<WalletType[]>([]);
-  //   const [ssoUserInfo, setSSOUserInfo] = useState<null | SocialLoginInfo>(null);
-  const [unavailableWallets, setUnavailableWallets] = useState<WalletType[]>(
+  const [walletLoading, setWalletLoading] = React.useState(false);
+  const [isMetamaskInstalled, setIsMetamaskInstalled] = React.useState(false);
+  const [installedWallets, setInstalledWallets] = React.useState<WalletType[]>(
     []
   );
+  const [availableWallets, setAvailableWallets] = React.useState<WalletType[]>(
+    []
+  );
+  //   const [ssoUserInfo, setSSOUserInfo] = React.useState<null | SocialLoginInfo>(null);
+  const [unavailableWallets, setUnavailableWallets] = React.useState<
+    WalletType[]
+  >([]);
 
   const handleConnectWallet = async (walletType: WalletType) => {
     setWalletLoading(true);
@@ -40,7 +44,7 @@ const ConnectWalletModal: React.FC<Props> = ({ onClose }) => {
     }
   };
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (typeof window !== "undefined") {
       const installed = SUPPORTED_WALLETS.filter(
         (wallet) =>
@@ -122,7 +126,7 @@ const ConnectWalletModal: React.FC<Props> = ({ onClose }) => {
     <Modal minWidth="95%" maxWidth="500px" maxHeight="95%" onClose={onClose}>
       <div className="flex w-full flex-col flex-wrap items-center justify-center p-0 md:flex-row [&>div]:md:flex [&>div]:md:flex-1 [&>div]:md:flex-col [&>div]:md:self-center">
         <div className="w-full">
-          <h2>CONNECT WALLET </h2>
+          <h2 className="text-text">CONNECT WALLET </h2>
           <div className="mb-4 mt-4 flex h-full w-full flex-col items-center justify-around">
             {isSafari && !isMobile && !isTablet && (
               <p className="font-normal text-red-500">

@@ -1,6 +1,5 @@
 import React from "react";
 import { walletInfos } from "../../constants/wallet";
-import { useThemeColors } from "../../stores/useThemeColors";
 import { useWalletStore } from "../../stores/wallet/walletStore";
 import { WalletType } from "../../types/wallet";
 
@@ -20,13 +19,12 @@ const WalletOption: React.FC<Props> = ({
   supported = false,
 }) => {
   const { walletType } = useWalletStore();
-  const { bgColor, textColor } = useThemeColors();
 
   return (
     <button
-      className={`relative mb-[15px] flex h-20 w-full items-center justify-between hover:border-[${textColor}] rounded-xl border border-border py-[20px] pl-[65px] pr-[15px] ${
+      className={`relative text-text bg-background mb-[15px] flex h-20 w-full items-center justify-between rounded-xl border border-border py-[20px] pl-[65px] pr-[15px] ${
         supported && walletType !== name
-          ? "cursor-pointer border border-border hover:text-link"
+          ? "cursor-pointer border border-border"
           : "cursor-not-allowed"
       }`}
       onClick={
@@ -36,10 +34,6 @@ const WalletOption: React.FC<Props> = ({
           ? onConnect
           : onInstall
       }
-      style={{
-        backgroundColor: bgColor,
-        color: textColor,
-      }}
     >
       <div className="absolute left-[25px] top-1/2 -translate-y-1/2">
         <img

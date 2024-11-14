@@ -93,6 +93,7 @@ export default [
       }),
       replace({
         "process.env.NODE_ENV": JSON.stringify("production"),
+        preventAssignment: true,
       }),
     ],
     external: ["react", "react-dom", "react/jsx-runtime", "lucid-cardano"],
