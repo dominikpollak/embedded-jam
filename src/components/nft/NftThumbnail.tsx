@@ -1,6 +1,7 @@
 import React from "react";
 import { assetUrls } from "../../constants/nft";
 import ImgError from "../../resources/images/ImgError.svg";
+import { LoadingSkeleton } from "../global/loading/LoadingSkeleton";
 
 type Props = {
   src: string;
@@ -67,12 +68,15 @@ export const NftThumbnail: React.FC<Props> = ({
       });
   }, [metadataSrc]);
 
-  if (loading) {
+  if (loading && !disablePlaceholder) {
     return (
       <LoadingSkeleton
         height={height + "px"}
         width={width + "px"}
-        className={className}
+        className={
+          "object-cover aspect-square top-0 left-0 w-full h-auto absolute " +
+          className
+        }
         rounded={className?.includes("rounded-full") ? "full" : "md"}
       />
     );
@@ -80,11 +84,6 @@ export const NftThumbnail: React.FC<Props> = ({
 
   return (
     <>
-      {loading && !disablePlaceholder && (
-        <div className="object-cover aspect-square top-0 left-0 w-full h-auto absolute">
-          <UniversalSkeleton width="100%" height="100%" borderRadius="10%" />
-        </div>
-      )}
       <img
         key={JSON.stringify(src)}
         {...commonProps}

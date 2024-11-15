@@ -1,7 +1,7 @@
 import { flattenDeep } from "lodash";
-import React, { useCallback, useEffect, useRef } from "react";
+import React from "react";
 import { UseInfiniteQueryResult, UseQueryResult } from "react-query";
-import { SpinningLoader } from "./SpinningLoader";
+import { SpinningLoader } from "./loading/SpinningLoader";
 import { EmptyPage, EmptyPageProps } from "./pages/EmptyPage";
 import { ErrorPage } from "./pages/ErrorPage";
 
@@ -60,15 +60,15 @@ export const InfiniteQueryRenderer = <
     return [];
   };
 
-  const fetchNextPage = useCallback(() => {
+  const fetchNextPage = React.useCallback(() => {
     if (query.hasNextPage && !query.isFetchingNextPage) {
       query.fetchNextPage();
     }
   }, [query]);
 
-  const targetRef = useRef<HTMLDivElement>(null);
+  const targetRef = React.useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
+  React.useEffect(() => {
     const fetchOnScroll = () => {
       if (
         targetRef.current &&

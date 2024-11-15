@@ -3,9 +3,11 @@ import { UseInfiniteQueryResult } from "react-query";
 import { usePendingTrades } from "../../hooks/usePendingTrades";
 import { ExploreNftsResponse, NftOffer } from "../../types/nft";
 import { TradeModal, TradeModalData } from "../../types/trade";
+import { isCompleteNft } from "../../utils/nft/nft";
+import { TabNftSkeleton } from "../global/loading/TabNftSkeleton";
 import { InfiniteQueryRenderer } from "../global/QueryRenderer";
 import InstantSellCard from "./InstantSellCard";
-import { isCompleteNft } from "../../utils/nft/nft";
+import TabNftItem from "./TabNftItem";
 
 interface NftListProps {
   query?: UseInfiniteQueryResult<ExploreNftsResponse, unknown>;
@@ -63,32 +65,53 @@ export const NftList: React.FC<NftListProps> = ({
         );
       case "grid":
         return (
-          <GridItems
+          <TabItems
+            setOpenTradeModal={setOpenTradeModal}
             items={items}
             owned={owned}
             ownAssetOffer={ownAssetOffer}
-            setOpenTradeModal={setOpenTradeModal}
             hideCollectionName={hideCollectionName}
           />
+          // <GridItems
+          //   items={items}
+          //   owned={owned}
+          //   ownAssetOffer={ownAssetOffer}
+          //   setOpenTradeModal={setOpenTradeModal}
+          //   hideCollectionName={hideCollectionName}
+          // />
         );
       case "list":
         return (
-          <ListItems
+          <TabItems
+            setOpenTradeModal={setOpenTradeModal}
             items={items}
             owned={owned}
             ownAssetOffer={ownAssetOffer}
-            isFilterOpen={isFilterOpen}
-            setOpenTradeModal={setOpenTradeModal}
             hideCollectionName={hideCollectionName}
           />
+          // <ListItems
+          //   items={items}
+          //   owned={owned}
+          //   ownAssetOffer={ownAssetOffer}
+          //   isFilterOpen={isFilterOpen}
+          //   setOpenTradeModal={setOpenTradeModal}
+          //   hideCollectionName={hideCollectionName}
+          // />
         );
       default:
         return (
-          <GridItems
+          // <GridItems
+          //   items={items}
+          //   owned={owned}
+          //   ownAssetOffer={ownAssetOffer}
+          //   setOpenTradeModal={setOpenTradeModal}
+          //   hideCollectionName={hideCollectionName}
+          // />
+          <TabItems
+            setOpenTradeModal={setOpenTradeModal}
             items={items}
             owned={owned}
             ownAssetOffer={ownAssetOffer}
-            setOpenTradeModal={setOpenTradeModal}
             hideCollectionName={hideCollectionName}
           />
         );
@@ -128,8 +151,7 @@ const TabItems: React.FC<NftListItemProps> = ({
       </div>
     )}
     {items.map((x, index) => {
-      if (!isCompleteNft(x))
-        return <TabNftSkeleton key={index} displayFormat="tab" />;
+      if (!isCompleteNft(x)) return <TabNftSkeleton key={index} />;
 
       return (
         <TabNftItem

@@ -14,6 +14,7 @@ module.exports = {
         redText: "var(--redText)",
         greenText: "var(--greenText)",
         yellowText: "var(--yellowText)",
+        shimmer: "var(--shimmer)",
       },
     },
   },

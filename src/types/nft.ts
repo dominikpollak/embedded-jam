@@ -1,4 +1,4 @@
-import { Paginate } from "./commonTypes";
+import { Paginate, SortOrder } from "./commonTypes";
 
 type DisplayUser = {
   address: string;
@@ -10,6 +10,22 @@ type DisplayUser = {
 export type Asset = {
   policyId: string;
   assetName: string;
+};
+
+export type NftStatus = "buy_now" | "all" | "mine";
+
+export type FetchExploreNftsParams = {
+  pageParam?: string;
+  sortOrder?: SortOrder;
+  collections: string[];
+  properties?: string[];
+  rarities?: string[];
+  minPrice?: number;
+  maxPrice?: number;
+  nftName?: string;
+  status?: NftStatus;
+  limit?: number;
+  pendingTrades?: number;
 };
 
 export type CollectionInfo = {

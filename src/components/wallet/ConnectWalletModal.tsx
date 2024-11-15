@@ -5,7 +5,7 @@ import { useConnectWallet } from "../../hooks/wallet/useConnectWallet";
 import { useWalletStore } from "../../stores/wallet/walletStore";
 import { WalletType } from "../../types/wallet";
 import Modal from "../global/Modal";
-import { SpinningLoader } from "../global/SpinningLoader";
+import { SpinningLoader } from "../global/loading/SpinningLoader";
 import WalletOption from "./WalletOption";
 
 type Props = {

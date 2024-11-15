@@ -1,8 +1,13 @@
 import React from "react";
+import { urls } from "../../constants/urls";
 import { usePendingTrades } from "../../hooks/usePendingTrades";
 import { useWalletStore } from "../../stores/wallet/walletStore";
 import { NftListData, NftToken } from "../../types/nft";
-import { useFormatFullPrice } from "../../utils/format";
+import {
+  cropString,
+  lovelaceToAda,
+  useFormatFullPrice,
+} from "../../utils/format";
 import {
   generateImgLinkingUrl,
   getAssetFingerprint,
@@ -11,175 +16,8 @@ import {
 import { translatePunycode } from "../../utils/nft/translatePunycode";
 import TxErrorModal from "../tx/TxErrorModal";
 import ConnectWalletModal from "../wallet/ConnectWalletModal";
-
-const TransactionButtonText = styled.span`
-  text-transform: uppercase;
-  font-weight: 700;
-  white-space: nowrap;
-  display: block;
-  border-radius: 10%;
-  padding: 10px 25px;
-  font-size: 14px;
-`;
-const ImageComponent = styled(NftThumbnail)`
-  display: flex;
-  aspect-ratio: 1 / 1;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  border-radius: 10%;
-`;
-
-const Wrapper = styled.section<{ textcolor: string }>`
-  position: relative;
-  height: 100%;
-  width: 100%;
-  text-decoration: none;
-  position: relative;
-  padding-bottom: 10px;
-  border-bottom: 1px solid ${colors.grey10};
-  display: grid;
-  grid-template-columns: repeat(1, minmax(0, 1fr));
-
-  &:hover {
-    border-bottom: 1px solid ${colors.primary};
-  }
-
-  &:hover ${TransactionButton} {
-    display: flex;
-    justify-content: center;
-  }
-
-  &:hover ${ImageComponent} {
-    filter: brightness(0.3);
-    transition: filter 0.15s ease-out;
-  }
-
-  &.disabled {
-    &:hover ${ImageComponent} {
-      filter: none;
-    }
-  }
-`;
-const ItemBaseWrapper = styled(Link)<{ textcolor: string }>`
-  position: relative;
-  width: 100%;
-  display: flex;
-  gap: ${spacing.xs};
-  flex-direction: column;
-  grid-column: span 2 / span 2;
-  align-items: flex-start;
-
-  &:hover {
-    & > span {
-      color: ${(props) => props.textcolor};
-    }
-  }
-
-  &.one-word-name {
-    & > span {
-      width: 100%;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-  }
-`;
-
-const PriceWrapper = styled.span<{ textcolor: string }>`
-  display: flex;
-  width: 100%;
-  flex-direction: column;
-  color: ${colors.grey40};
-  font-size: 13px;
-  order: 1;
-  grid-row: span 2;
-  text-align: right;
-  margin-left: auto;
-
-  & > span:first-of-type {
-    font-size: 17px;
-    line-height: 25px;
-    font-weight: bold;
-    margin-bottom: 0;
-    color: ${(props) => props.textcolor || colors.text};
-  }
-  & > span:last-of-type {
-    font-weight: 400;
-    font-size: 14px;
-    line-height: 18px;
-  }
-`;
-
-const DisplayName = styled(Body2Bold)`
-  font-weight: 700;
-  font-size: 18px;
-  line-height: 25px;
-  height: 55px;
-`;
-
-const CollectionName = styled.span<{ textcolor: string | undefined }>`
-  line-height: 25px;
-  font-weight: 500;
-  color: ${(props) => props.textcolor};
-
-  &.shorter {
-    width: 100%;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-
-  &:hover {
-    color: ${(props) => props.textcolor || colors.primary};
-  }
-
-  a {
-    color: ${(props) => props.textcolor || colors.text};
-    &:hover {
-      color: ${(props) => props.textcolor || colors.primary};
-    }
-  }
-
-  &.hide {
-    display: none;
-  }
-`;
-
-const ImageWrapper = styled.div<{ imageLoaded: boolean }>`
-  position: relative;
-  height: 100%;
-  width: 100%;
-
-  &.jam {
-    &::before {
-      content: "";
-      opacity: ${(props) => (props.imageLoaded ? "1" : "0")};
-      transition: opacity 0.3s ease-in-out;
-      background: linear-gradient(
-        90deg,
-        rgb(255, 121, 19) 0%,
-        rgba(228, 67, 31, 0.893) 50%,
-        rgb(254, 121, 19) 100%
-      );
-      position: absolute;
-      top: -2px;
-      right: -2px;
-      width: calc(100% + 4px);
-      height: calc(100% + 4px);
-      border-radius: 10%;
-      z-index: -1;
-    }
-  }
-`;
-
-const Col = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: start;
-  width: 100%;
-  gap: 1px;
-`;
+import { NftThumbnail } from "./NftThumbnail";
+import { RarityBadge } from "./RarityBadge";
 
 type Props = Optional<NftToken, "collection">;
 
@@ -200,7 +38,8 @@ const TabNftItem: React.FC<Props> = ({
   const { address, walletType } = useWalletStore();
   const { pendingTrades } = usePendingTrades();
   const [openWarningModal, setOpenWarningModal] = React.useState(false);
-  const [imageLoaded, setImageLoaded] = React.useState(false);
+  //may need this
+  //   const [imageLoaded, setImageLoaded] = React.useState(false);
   const [listing, setListing] = React.useState<NftListData | undefined>(
     undefined
   );
@@ -218,7 +57,6 @@ const TabNftItem: React.FC<Props> = ({
         assetName: assetNameHex,
       }),
     });
-    // eslint-disable-next-line
   }, []);
 
   const isListedByMe = sellOrder?.listedByAddress === address;
@@ -294,13 +132,9 @@ const TabNftItem: React.FC<Props> = ({
         />
       )}
 
-      <Wrapper
-        textcolor={applyIframeConfig ? textColor : colors.primary}
-        className={` ${disableBuyNow ? "disabled" : ""}`}
-      >
+      <section className="group relative grid-cols-1 w-full h-full pb-3 border-b border-border grid hover:border-text">
         {/* IMAGE */}
-        <ItemBaseWrapper
-          textcolor={applyIframeConfig ? textColor : colors.primary}
+        <a
           href={
             urls.assetDetail(
               getAssetFingerprint({
@@ -309,33 +143,39 @@ const TabNftItem: React.FC<Props> = ({
               })
             ) + `${affilCode ? `?a=${affilCode}` : ""}`
           }
-          target={applyIframeConfig ? "_blank" : "_self"}
-          className={displayName.split(" ").length === 1 ? "one-word-name" : ""}
+          className="relative w-full flex gap-4 flex-col col-span-2 items-start"
         >
-          <ImageWrapper
-            imageLoaded={imageLoaded}
-            className={`${sellOrder?.source === "jam" ? "jam" : ""}`}
+          <div
+            className={`relative w-full h-full ${
+              sellOrder?.source === "jam" ? "jam" : ""
+            }`}
           >
-            <ScTooltipIcon
+            {/* TODO */}
+
+            {/* <ScTooltipIcon
               source={sellOrder?.source}
               displayFormat="tab"
               imageLoaded={imageLoaded}
-            />
+            /> */}
             {!disableBuyNow && (
               <button
-                className="hidden absolute rounded-[150px] max-w-[70%] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-transparent text-white border-2 border-white cursor-pointer transition-all duration-200 z-25 hover:bg-white hover:text-black"
+                className="hidden group-hover:flex group-hover:justify-center absolute rounded-[150px] max-w-[70%] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-transparent text-white border-2 border-white cursor-pointer transition-all duration-200 z-25 hover:bg-white hover:text-black"
                 onClick={handleTransaction}
               >
-                <TransactionButtonText className="tab">
+                <span className="uppercase font-bold whitespace-nowrap block rounded-[10%] py-[10px] px-[25px] text-[14px]">
                   {renderTransactionButton()}
-                </TransactionButtonText>
+                </span>
               </button>
             )}
-            <ImageComponent
+            <NftThumbnail
               lazy
+              className={`flex aspect-square w-full h-full object-cover rounded-[10%] ${
+                disableBuyNow
+                  ? ""
+                  : "group-hover:filter-brightness-30 transition-filter duration-150"
+              }`}
               width={130}
               height={130}
-              onLoad={() => setTimeout(() => setImageLoaded(true), 100)}
               src={generateImgLinkingUrl(
                 getAssetFingerprint({
                   policyId: policyId,
@@ -344,57 +184,65 @@ const TabNftItem: React.FC<Props> = ({
                 "md"
               )}
             />
-          </ImageWrapper>
+          </div>
 
           {/* NAME */}
-          <DisplayName color={applyIframeConfig ? textColor : "text"}>
+          <span
+            className={`font-bold text-[18px] leading-6 h-[55px] ${
+              displayName.split(" ").length === 1
+                ? "w-full overflow-hidden text-ellipsis whitespace-nowrap"
+                : ""
+            }`}
+          >
             {cropString(formattedDisplayName, 48)}
-          </DisplayName>
-        </ItemBaseWrapper>
+          </span>
+        </a>
 
         {/* COLLECTION */}
-        <Col>
-          <CollectionName
-            textcolor={applyIframeConfig ? textColor : undefined}
-            className={`nft-name ${disableBuyNow ? "shorter" : ""} ${
-              hideCollectionName ? "hide" : ""
-            }`}
+        <div className="flex flex-col justify-start w-full gap-[1px]">
+          <span
+            className={`nft-name text-text leading-6 ${
+              disableBuyNow
+                ? "w-full overflow-hidden text-ellipsis whitespace-nowrap"
+                : ""
+            } ${hideCollectionName ? "hidden" : ""}`}
             title={collection?.displayName}
           >
-            <Link
-              target={applyIframeConfig ? "_blank" : "_self"}
+            <a
               href={
                 urls.collectionDetail(collectionName || "") +
                 `${affilCode ? `?a=${affilCode}` : ""}`
               }
             >
               {collection?.displayName}
-            </Link>
-          </CollectionName>
+            </a>
+          </span>
 
           {/* RARITY */}
           {rarity && (
             <RarityBadge
-              theme={iframeTheme}
               percentage={rarity.percentage}
               nftsInCollection={collection?.nftsInCirculation || 0}
               order={rarity.order}
             />
           )}
-        </Col>
+        </div>
 
-        <PriceWrapper
-          textcolor={applyIframeConfig ? textColor : colors.text}
-          className="price"
-        >
+        <span className="price flex w-full flex-col text-text text-right order-1 grid-row-span-2 ml-auto">
           {/* PRICE IN ADA */}
-          {sellOrder && <span>{formatAdaFull(sellOrder.price)}</span>}
+          {sellOrder && (
+            <span className="text-[17px] leading-6 font-bold mb-0">
+              {lovelaceToAda(sellOrder.price)}
+            </span>
+          )}
           {/* PRICE IN DOLLARS */}
           {sellOrder && (
-            <span color="grey40">{formatPrice(sellOrder.price)}</span>
+            <span className="text-grayText text-[14px] leading-4">
+              {formatPrice(sellOrder.price)}
+            </span>
           )}
-        </PriceWrapper>
-      </Wrapper>
+        </span>
+      </section>
     </>
   );
 };

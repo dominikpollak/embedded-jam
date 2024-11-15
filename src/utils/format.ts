@@ -15,6 +15,11 @@ export const formatUsername = (username: string, type: "short" | "long") => {
   }
 };
 
+export const cropString = (str: string, maxLength: number) => {
+  if (str.length <= maxLength) return str;
+  return str.slice(0, maxLength / 2 - 4) + "..." + str.slice(-maxLength / 2);
+};
+
 export const lovelaceToAda = (lovelace: number): string => {
   const ada = lovelace / 1e6;
 

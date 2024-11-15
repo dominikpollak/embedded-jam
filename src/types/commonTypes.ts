@@ -12,3 +12,11 @@ export type Paginate = {
   cursor: string;
   hasNextPage: boolean;
 };
+
+export type SortOrder =
+  | "recently_listed"
+  | "least_recently_listed"
+  | "price_low_to_high"
+  | "price_high_to_low"
+  | "rarity_low_to_high"
+  | "rarity_high_to_low";
