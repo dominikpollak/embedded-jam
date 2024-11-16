@@ -6,9 +6,9 @@ module.exports = {
       colors: {
         text: "var(--text)",
         background: "var(--background)",
+        darkerBg: "var(--darkerBg)",
         primary: "var(--primary)",
         secondary: "var(--secondary)",
-        darker: "var(--darker)",
         border: "var(--border)",
         grayText: "var(--grayText)",
         redText: "var(--redText)",

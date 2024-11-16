@@ -1,4 +1,5 @@
 import { Paginate, SortOrder } from "./commonTypes";
+import { Trade } from "./trade";
 
 type DisplayUser = {
   address: string;
@@ -147,4 +148,31 @@ export type NftListData = {
     //payouts: Payout[] | undefined;
   } | null;
   assetFingerprint?: string;
+};
+
+export type FetchNftsByAddress = {
+  stakeKey: string;
+  pageParam?: string;
+  tradesLength?: number;
+};
+
+export type NftsByAddressResponse = Paginate & {
+  items: Partial<NftListingResponse>[];
+};
+
+export type NftOffersResponse = Paginate & {
+  items: NftOffer[];
+};
+
+export type OfferType = "nft" | "collection";
+type OfferOrder = "recently_listed" | "least_recently_listed" | "price";
+
+export type FetchNftOffersParams = {
+  collection?: string;
+  policyId?: string;
+  assetNameHex?: string;
+  stakeKey?: string;
+  offerType?: OfferType;
+  order?: OfferOrder;
+  pendingTrades?: Record<string, Trade>;
 };

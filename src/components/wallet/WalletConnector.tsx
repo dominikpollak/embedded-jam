@@ -7,7 +7,7 @@ import { formatString, lovelaceToAda } from "../../utils/format";
 import { getWalletBalance } from "../../utils/wallet/getWalletBalance";
 import Button from "../global/Button";
 import CopyButton from "../global/CopyButton";
-import Dropdown from "../global/Dropdown";
+import Dropdown from "../global/dropdown/Dropdown";
 import ConnectWalletModal from "./ConnectWalletModal";
 
 interface Props {

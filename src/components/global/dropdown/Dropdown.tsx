@@ -1,8 +1,8 @@
 import { ChevronDown } from "lucide-react";
 import type { ReactNode } from "react";
 import React from "react";
-import { useDropdownState } from "../../stores/states/useDropdownState";
-import { DropdownOption } from "../../types/commonTypes";
+import { useDropdownState } from "../../../stores/states/useDropdownState";
+import { DropdownOption } from "../../../types/commonTypes";
 
 interface DropdownProps {
   id: string;

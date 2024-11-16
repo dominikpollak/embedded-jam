@@ -20,3 +20,7 @@ export type SortOrder =
   | "price_high_to_low"
   | "rarity_low_to_high"
   | "rarity_high_to_low";
+
+export type Timespans = "all" | "12h" | "24h" | "7d" | "30d";
+
+export type Views = "grid" | "list" | "tab";

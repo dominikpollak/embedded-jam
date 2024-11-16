@@ -1,43 +1,25 @@
 import { flattenDeep, isUndefined } from "lodash";
-import { useEffect, useRef, useState } from "react";
+import React from "react";
+import { tradeTypeLabels } from "../../constants/nft";
+import useDebounce from "../../hooks/common/useDebounce";
+import { usePendingTrades } from "../../hooks/usePendingTrades";
+import { useCollectionDetail } from "../../services/collection";
+import { useExchangeRates } from "../../services/exchangeRates";
+import {
+  useExploreNfts,
+  useNftsByAddress,
+  useOffers,
+} from "../../services/nft";
+import { useSwitchStorage } from "../../stores/useSwitchStorage";
+import { useWalletStore } from "../../stores/wallet/walletStore";
+import { SortOrder } from "../../types/commonTypes";
+import { NationalCurrencies } from "../../types/currency";
+import { NftStatus } from "../../types/nft";
+import { priceOrAdaToLovelace } from "../../utils/format";
 import Button from "../global/Button";
 import { SpinningLoader } from "../global/loading/SpinningLoader";
 import { NftList } from "../nft/NftList";
-
-const Row = styled.div`
-  display: flex;
-  align-items: center;
-  width: fit-content;
-  ${media.desktopS} {
-    flex-direction: row;
-  }
-  gap: ${spacing.xs};
-`;
-
-const FilterWrapper = styled.div`
-  display: flex;
-  position: relative;
-  min-height: 700px;
-  width: 100%;
-  gap: 15px;
-  & > :first-child {
-    margin-top: 0;
-  }
-`;
-
-const MakeOffer = styled(motion.div)`
-  position: fixed;
-  bottom: 5px;
-  right: 5px;
-  z-index: 10;
-  padding: 4px 5px 6px 5px;
-  border-radius: 20px;
-  box-shadow: 0px 0px 10px -2px rgba(0, 0, 0, 0.41);
-  background-color: ${colors.background};
-  ${media.desktopM} {
-    display: none;
-  }
-`;
+import { NftsFilter } from "../nft/NftsFilter";
 
 type Query = {
   sort?: SortOrder;
@@ -65,7 +47,10 @@ export const CollectionItems: React.FC<Props> = ({
   defaultView,
   hasRarity,
 }) => {
-  const offerRef = useRef<HTMLDivElement>(null);
+  const urlQuery = new URLSearchParams(window.location.search).get(
+    "query"
+  ) as Query;
+  const offerRef = React.useRef<HTMLDivElement>(null);
   const { pendingTrades } = usePendingTrades();
   const { explorerView, setExplorerView } = useSwitchStorage();
   const { data: activeCollectionDetail } = useCollectionDetail(collection);
@@ -73,28 +58,25 @@ export const CollectionItems: React.FC<Props> = ({
     collection: collection,
     order: "price",
   });
-  const router = useRouter();
-  const applyIframeConfig =
-    router.pathname.startsWith("/iframe") ||
-    router.pathname.startsWith("/embed");
-  const { textColor } = useIframeColors();
-  const [sortOrder, setSortOrder] = useState<SortOrder>(defaultSortOrder);
-  const [properties, setProperties] = useState<string[]>([]);
-  const [rarity, setRarity] = useState<string>("");
-  const [searchValue, setSearchValue] = useState("");
+  const [sortOrder, setSortOrder] = React.useState<SortOrder>(defaultSortOrder);
+  const [properties, setProperties] = React.useState<string[]>([]);
+  const [rarity, setRarity] = React.useState<string>("");
+  const [searchValue, setSearchValue] = React.useState("");
   const debouncedSearchValue = useDebounce(searchValue, 400);
-  const [minPrice, setMinPrice] = useState<number | null>(null);
-  const [maxPrice, setMaxPrice] = useState<number | null>(null);
-  const [status, setStatus] = useState<NftStatus>(defaultStatus);
-  const [currency, setCurrency] = useState<NationalCurrencies | "ada">("ada");
-  const [view, setView] = useState<"grid" | "list" | "tab">(
+  const [minPrice, setMinPrice] = React.useState<number | null>(null);
+  const [maxPrice, setMaxPrice] = React.useState<number | null>(null);
+  const [status, setStatus] = React.useState<NftStatus>(defaultStatus);
+  const [currency, setCurrency] = React.useState<NationalCurrencies | "ada">(
+    "ada"
+  );
+  const [view, setView] = React.useState<"grid" | "list" | "tab">(
     defaultView || explorerView
   );
-  const { content, setOpenTradeModal } = useTradeModals({
-    collection: activeCollectionDetail || undefined,
-  });
+  //   const { content, setOpenTradeModal } = useTradeModals({
+  //     collection: activeCollectionDetail || undefined,
+  //   });
 
-  const [showSideFilter, setShowSideFilter] = useState(false);
+  const [showSideFilter, setShowSideFilter] = React.useState(false);
 
   const { stakeKey, address } = useWalletStore();
   const assetsQuery = useNftsByAddress({ stakeKey: stakeKey || "" });
@@ -120,10 +102,10 @@ export const CollectionItems: React.FC<Props> = ({
     : undefined;
 
   const handleCollectionOffer = () => {
-    setOpenTradeModal("makeOffer");
+    // setOpenTradeModal("makeOffer");
   };
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (!defaultView) return;
 
     setView(defaultView);
@@ -157,9 +139,9 @@ export const CollectionItems: React.FC<Props> = ({
       ? hasRarity
       : query.data?.pages[0]?.items[0]?.rarity?.percentage;
 
-  useEffect(() => {
+  React.useEffect(() => {
     const { sort, properties, minPrice, maxPrice, currency, status, rarities } =
-      router.query as Query;
+      urlQuery;
 
     setProperties(
       (Array.isArray(properties)
@@ -178,11 +160,11 @@ export const CollectionItems: React.FC<Props> = ({
     setStatus(status ?? defaultStatus);
     if (rarities) setRarity(rarities);
     else setRarity("");
-  }, [router.query]);
+  }, [urlQuery]);
 
   return (
     <>
-      {content}
+      {/* {content} */}
       <>
         <NftsFilter
           view={view}
@@ -199,7 +181,7 @@ export const CollectionItems: React.FC<Props> = ({
           showSideFilter={showSideFilter}
           activeCollectionDetail={activeCollectionDetail}
         />
-        <FilterWrapper>
+        <div className="flex relative min-h-[700px] w-full gap-[15px] first:mt-0">
           {showSideFilter && (
             <CollectionSideFilter
               key="sideFilter"
@@ -227,60 +209,32 @@ export const CollectionItems: React.FC<Props> = ({
               query={query}
               isFilterOpen={showSideFilter}
               ownAssetOffer={ownAssetOffer}
-              setOpenTradeModal={setOpenTradeModal}
+              //   setOpenTradeModal={setOpenTradeModal}
               hideCollectionName
             />
           </div>
-          <MakeOffer
+          <div
             ref={offerRef}
-            initial={{ y: 100 }}
-            animate={{ y: 0 }}
-            transition={{ bounce: 0 }}
+            className="fixed bottom-1 right-1 z-10 pt-[4px] pr-[5px] pb-[6px] pl-[5px] rounded-[20px] shadow-md bg-background md:hidden"
           >
-            {applyIframeConfig ? (
-              <IframeButton
-                bgcolor={textColor}
-                onClick={handleCollectionOffer}
-                size="superSmall"
-                variant="primary"
-                label={
-                  Object.keys(pendingTrades).length !== 0 ? (
-                    <Row>
-                      <SpinnerCircular
-                        color={colors.primary}
-                        secondaryColor={colors.grey20}
-                        thickness={150}
-                        size={25}
-                        enabled
-                      />
-                      <p>{tradeTypeLabels[pendingTrades[0].type]} pending</p>
-                    </Row>
-                  ) : (
-                    "Make offer"
-                  )
-                }
-                disabled={Object.keys(pendingTrades).length !== 0}
-              />
-            ) : (
-              <Button
-                onClick={handleCollectionOffer}
-                size="xs"
-                variant="primary"
-                label={
-                  Object.keys(pendingTrades).length !== 0 ? (
-                    <Row>
-                      <SpinningLoader size={25} />
-                      <p>{tradeTypeLabels[pendingTrades[0].type]} pending</p>
-                    </Row>
-                  ) : (
-                    "Make offer"
-                  )
-                }
-                disabled={Object.keys(pendingTrades).length !== 0}
-              />
-            )}
-          </MakeOffer>
-        </FilterWrapper>
+            <Button
+              onClick={handleCollectionOffer}
+              size="xs"
+              variant="primary"
+              label={
+                Object.keys(pendingTrades).length !== 0 ? (
+                  <div className="flex items-center w-fit lg:flex-row gap-4">
+                    <SpinningLoader size={25} />
+                    <p>{tradeTypeLabels[pendingTrades[0].type]} pending</p>
+                  </div>
+                ) : (
+                  "Make offer"
+                )
+              }
+              disabled={Object.keys(pendingTrades).length !== 0}
+            />
+          </div>
+        </div>
       </>
     </>
   );
