@@ -1,5 +1,6 @@
 import React from "react";
 import { assetUrls } from "../../constants/nft";
+import UniversalSkeleton from "../global/loading/UniversalSkeleton";
 
 type Props = {
   src: string;
@@ -19,20 +20,17 @@ export const NftThumbnail: React.FC<Props> = ({
   alt,
   className,
   disablePlaceholder = false,
+  onLoad,
 }) => {
-  console.log(metadataSrc);
   const commonProps = {
     alt,
     className,
   };
-  const [loading, setLoading] = React.useState(true);
+  //   const [loading, setLoading] = React.useState(true);
+  const [imageLoaded, setImageLoaded] = React.useState(false);
   const [src, setSrc] = React.useState<string>(
     assetUrls.getThumbnail(metadataSrc)
   );
-
-  React.useEffect(() => {
-    setSrc(assetUrls.getThumbnail(metadataSrc));
-  }, [metadataSrc]);
 
   //   React.useEffect(() => {
   //     const loadImage = (url: string, fallbackUrl: string) =>
@@ -83,10 +81,23 @@ export const NftThumbnail: React.FC<Props> = ({
 
   return (
     <>
+      {!imageLoaded && !disablePlaceholder && (
+        <div className="absolute top-0 left-0 aspect-square object-cover w-full h-full">
+          <UniversalSkeleton width="100%" height="100%" borderRadius="10%" />
+        </div>
+      )}
       <img
         key={JSON.stringify(src)}
         {...commonProps}
         src={src}
+        onError={() => {
+          //   setSrc(ImgError.src);
+          setImageLoaded(true);
+        }}
+        onLoad={() => {
+          onLoad && onLoad();
+          setImageLoaded(true);
+        }}
         alt="nft thumbnail"
         height={height}
         width={width}

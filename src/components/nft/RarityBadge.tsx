@@ -77,8 +77,8 @@ export const RarityBadge: React.FC<Props> = ({
       <Tooltip
         position="top"
         text={
-          <div className="whitespace-nowrap">
-            <span className="text-xs">{`${order} / ${nftsInCollection}`}</span>
+          <div className="whitespace-nowrap bg-background text-text">
+            <span>{`${order} / ${nftsInCollection}`}</span>
           </div>
         }
       >

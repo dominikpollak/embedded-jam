@@ -1,5 +1,4 @@
 import React, { useRef } from "react";
-import { colors } from "../../constants/colors";
 
 type TooltipPosition =
   | "top"
@@ -150,7 +149,6 @@ type Props = {
   preferredWidth?: number;
   closeDelay?: number;
   show?: boolean;
-  bgcolor?: keyof typeof colors;
 };
 export const Tooltip: React.FC<Props> = ({
   position: initialPosition,
@@ -159,7 +157,6 @@ export const Tooltip: React.FC<Props> = ({
   preferredWidth,
   closeDelay = 0,
   show = true,
-  bgcolor,
 }) => {
   const [isHovered, setIsHovered] = React.useState(false);
   const tooltipRef = useRef<HTMLDivElement>(null);
@@ -169,9 +166,8 @@ export const Tooltip: React.FC<Props> = ({
   const [position, setPosition] = React.useState(initialPosition);
 
   const baseStyles =
-    "absolute bg-background text-text rounded-lg p-4 text-left shadow-lg z-50";
+    "absolute bg-darker rounded-lg text-text rounded-lg p-4 text-left shadow-lg z-50";
   const visibilityStyles = isHovered ? "block" : "hidden";
-  const backgroundColor = bgcolor || colors.text;
 
   const positionStyles = (() => {
     switch (position) {
@@ -309,14 +305,13 @@ export const Tooltip: React.FC<Props> = ({
     >
       <div onClick={handleClick}>{children}</div>
       <div
-        className={`${
+        className={`bg-background text-text ${
           isHovered ? "opacity-100" : "opacity-0"
         } transition-opacity duration-100`}
       >
         <div
           className={`${baseStyles} ${visibilityStyles}`}
           style={{
-            backgroundColor,
             width: width ? `${width}px` : "auto",
             ...positionStyles,
           }}

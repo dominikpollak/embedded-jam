@@ -1,3 +1,4 @@
+import detectUrlChange from "detect-url-change";
 import { isUndefined } from "lodash";
 import React from "react";
 import { tradeTypeLabels } from "../../constants/nft";
@@ -42,23 +43,23 @@ export const CollectionItems: React.FC<Props> = (
     //   defaultView,
   }
 ) => {
-  //create location state and window.location event listener where you will set the location state
-  const [location, setLocation] = React.useState(window.location);
-  let previousUrl = "";
-  const observer = new MutationObserver(function (mutations) {
-    if (window.location.href !== previousUrl) {
-      previousUrl = window.location.href;
-      setLocation(window.location);
-    }
-  });
-  const config = { subtree: true, childList: true };
-  observer.observe(document, config);
+  const [currentUrl, setCurrentUrl] = React.useState(window.location.href);
+
+  React.useEffect(() => {
+    detectUrlChange.on("change", (newUrl) => {
+      setCurrentUrl(newUrl);
+    });
+
+    return () => {
+      detectUrlChange.off("change", () => {});
+    };
+  }, []);
 
   const urlParams = new URLSearchParams(window.location.search);
   const offerRef = React.useRef<HTMLDivElement>(null);
   const { pendingTrades } = usePendingTrades();
   const { explorerView, setExplorerView } = useSwitchStorage();
-  const collection = "claynation";
+  const collection = "Introverts";
   const defaultView = "tab";
   const { data: activeCollectionDetail } = useCollectionDetail(collection);
   const { openConnectWalletModal, setOpenConnectWalletModal } =
@@ -144,6 +145,7 @@ export const CollectionItems: React.FC<Props> = (
   });
 
   React.useEffect(() => {
+    console.log("currentUrl", currentUrl);
     const sort = urlParams.get("sort") as SortOrder;
     const properties = urlParams.get("properties")?.split(",");
     const minPrice = urlParams.get("minPrice")
@@ -175,7 +177,7 @@ export const CollectionItems: React.FC<Props> = (
     setStatus(status ?? defaultStatus);
     if (rarities) setRarity(rarities);
     else setRarity("");
-  }, [location]);
+  }, [currentUrl]);
 
   return (
     <>

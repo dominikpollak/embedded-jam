@@ -156,7 +156,7 @@ const TabItems: React.FC<NftListItemProps> = ({
       return (
         <TabNftItem
           hideCollectionName={hideCollectionName}
-          key={x.assetNameHex}
+          key={x.assetNameHex + JSON.stringify(x.fullMetadata)}
           displayFormat="tab"
           owned={owned}
           {...x}

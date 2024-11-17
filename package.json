@@ -50,6 +50,7 @@
     "@rollup/plugin-url": "^8.0.2",
     "buffer": "^6.0.3",
     "date-fns": "^4.1.0",
+    "detect-url-change": "^1.0.2",
     "lodash": "^4.17.21",
     "lucide-react": "^0.456.0",
     "punycode": "^2.3.1",

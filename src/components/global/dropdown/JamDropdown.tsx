@@ -153,7 +153,7 @@ export const JamDropdown: React.FC<Props> = ({
             {"+" + actualLabel.hiddenValuesCount}
           </span>
         )}
-        <ChevronDown color={colors.text} />
+        <ChevronDown color={colors.text} size={15} />
         {value.length != 0 && <FloatingLabel>{label}</FloatingLabel>}
       </Field>
 

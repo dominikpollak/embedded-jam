@@ -31,7 +31,7 @@ const UniversalSkeleton: React.FC<Props> = ({
 
   return (
     <div
-      className={`aspect-w-1 shimmer bg-shimmer aspect-h-1 ${className}`}
+      className={`aspect-square w-full h-full shimmer bg-shimmer ${className}`}
       style={styles}
     />
   );

@@ -32,7 +32,7 @@ export const FloatingLabel: React.FC<React.ComponentProps<"div">> = ({
   return (
     <div
       {...props}
-      className="text-grayText top-[-4px] absolute bg-background rounded-[20px] px-[12px] whitespace-nowrap leading-[11px]"
+      className="text-grayText top-[-4px] text-[11px] font-medium absolute bg-background rounded-[20px] px-[12px] whitespace-nowrap leading-[11px]"
     >
       {children}
     </div>
