@@ -12,7 +12,7 @@ export const fetchCollectionDetail = async (
     url: getUrl(`nfts/collections/${collection}`),
     cache: false,
   });
-  return res.data as CollectionDetailResponse;
+  return res as CollectionDetailResponse;
 };
 
 export const useCollectionDetail = (

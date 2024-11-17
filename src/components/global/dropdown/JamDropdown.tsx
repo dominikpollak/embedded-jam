@@ -2,7 +2,6 @@ import { Check, ChevronDown } from "lucide-react";
 import React from "react";
 import { colors } from "../../../constants/colors";
 import { useContextMenu } from "../../../hooks/common/useContextMenu";
-import { SearchBox } from "../../../styles/BaseDropdownStyles";
 import Button from "../Button";
 import { SearchedText } from "../SearchedText";
 import { TextField } from "../TextField";
@@ -12,6 +11,7 @@ import {
   FloatingLabel,
   Option,
   Options,
+  SearchBox,
 } from "./BaseDropdownParts";
 
 export const createLabel = (
@@ -81,7 +81,6 @@ type Props = {
   }) => JSX.Element;
   renderSocials?: JSX.Element;
   className?: string;
-  ignoreIframeTheme?: boolean;
 };
 export const JamDropdown: React.FC<Props> = ({
   label,
@@ -94,7 +93,6 @@ export const JamDropdown: React.FC<Props> = ({
   renderOption,
   className,
   renderSocials,
-  ignoreIframeTheme,
   style,
 }) => {
   const { isOpen, toggle, contextMenuRef, menuOpenerRef } = useContextMenu();
@@ -141,7 +139,12 @@ export const JamDropdown: React.FC<Props> = ({
 
   return (
     <div style={style} className={`relative ${className}`}>
-      <Field onClick={toggle} ref={menuOpenerRef}>
+      <Field
+        role="button"
+        className="cursor-pointer"
+        onClick={toggle}
+        ref={menuOpenerRef}
+      >
         <span className="text-[13px] leading-[17px] font-bold uppercase">
           {actualLabel.value}
         </span>
@@ -194,9 +197,9 @@ export const JamDropdown: React.FC<Props> = ({
                         )}
                       </>
                     )}
-                    <div className="ml-2 w-[14px]">
-                      {active && <Check color={colors.text} />}
-                    </div>
+                    {active && (
+                      <Check className="ml-2" size={15} color={colors.text} />
+                    )}
                   </Option>
                 );
               })}

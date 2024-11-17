@@ -1,6 +1,7 @@
 import React from "react";
 import { urls } from "../../constants/urls";
 import { usePendingTrades } from "../../hooks/usePendingTrades";
+import { useOpenConnectWalletModal } from "../../stores/states/useOpenConnectWalletModal";
 import { useWalletStore } from "../../stores/wallet/walletStore";
 import { NftListData, NftToken } from "../../types/nft";
 import {
@@ -15,7 +16,6 @@ import {
 } from "../../utils/nft/nft";
 import { translatePunycode } from "../../utils/nft/translatePunycode";
 import TxErrorModal from "../tx/TxErrorModal";
-import ConnectWalletModal from "../wallet/ConnectWalletModal";
 import { NftThumbnail } from "./NftThumbnail";
 import { RarityBadge } from "./RarityBadge";
 
@@ -34,7 +34,8 @@ const TabNftItem: React.FC<Props> = ({
   owned = false,
 }) => {
   const affilCode = window.location.search.split("a=")[1];
-  const [showConnectModal, setShowConnectModal] = React.useState(false);
+  const { openConnectWalletModal, setOpenConnectWalletModal } =
+    useOpenConnectWalletModal();
   const { address, walletType } = useWalletStore();
   const { pendingTrades } = usePendingTrades();
   const [openWarningModal, setOpenWarningModal] = React.useState(false);
@@ -79,7 +80,7 @@ const TabNftItem: React.FC<Props> = ({
     e.preventDefault();
 
     if (!address || !walletType) {
-      setShowConnectModal(true);
+      setOpenConnectWalletModal(true);
       return;
     }
 
@@ -122,9 +123,6 @@ const TabNftItem: React.FC<Props> = ({
   return (
     <>
       {/* {content} */}
-      {showConnectModal && (
-        <ConnectWalletModal onClose={() => setShowConnectModal(false)} />
-      )}
       {openWarningModal && (
         <TxErrorModal
           txFunc={handleTransaction}
@@ -159,7 +157,7 @@ const TabNftItem: React.FC<Props> = ({
             /> */}
             {!disableBuyNow && (
               <button
-                className="hidden group-hover:flex group-hover:justify-center absolute rounded-[150px] max-w-[70%] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-transparent text-white border-2 border-white cursor-pointer transition-all duration-200 z-25 hover:bg-white hover:text-black"
+                className="hidden group-hover:flex group-hover:justify-center absolute rounded-[150px] max-w-[70%] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-transparent text-white border-2 border-white cursor-pointer transition-all duration-200 z-[25] hover:bg-white hover:text-black"
                 onClick={handleTransaction}
               >
                 <span className="uppercase font-bold whitespace-nowrap block rounded-[10%] py-[10px] px-[25px] text-[14px]">
@@ -172,7 +170,7 @@ const TabNftItem: React.FC<Props> = ({
               className={`flex aspect-square w-full h-full object-cover rounded-[10%] ${
                 disableBuyNow
                   ? ""
-                  : "group-hover:filter-brightness-30 transition-filter duration-150"
+                  : "group-hover:brightness-[30%] transition-filter duration-150"
               }`}
               width={130}
               height={130}

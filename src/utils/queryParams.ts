@@ -2,8 +2,11 @@ import { Paginate } from "../types/commonTypes";
 
 type SelectedOptions = [string, string][];
 
-export const getNextPageParam = <T extends Paginate>(lastPage: T) =>
-  lastPage.hasNextPage ? lastPage.cursor : undefined;
+export const getNextPageParam = <T extends Paginate>(lastPage: T) => {
+  if (!lastPage) return undefined;
+
+  return lastPage.hasNextPage ? lastPage.cursor : undefined;
+};
 
 export const getPropertiesParams = (properties?: SelectedOptions) => {
   if (!properties || !properties.length) return undefined;

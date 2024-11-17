@@ -30,7 +30,7 @@ export const customFetchHandler = async ({
       headers: headersAndCache,
       body: JSON.stringify(data),
     });
-    return res;
+    return await res.json();
   } catch (error: any) {
     if (
       error.response &&

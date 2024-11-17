@@ -1,17 +1,13 @@
-import { flattenDeep, isUndefined } from "lodash";
+import { isUndefined } from "lodash";
 import React from "react";
 import { tradeTypeLabels } from "../../constants/nft";
 import useDebounce from "../../hooks/common/useDebounce";
 import { usePendingTrades } from "../../hooks/usePendingTrades";
 import { useCollectionDetail } from "../../services/collection";
 import { useExchangeRates } from "../../services/exchangeRates";
-import {
-  useExploreNfts,
-  useNftsByAddress,
-  useOffers,
-} from "../../services/nft";
+import { useExploreNfts } from "../../services/nft";
+import { useOpenConnectWalletModal } from "../../stores/states/useOpenConnectWalletModal";
 import { useSwitchStorage } from "../../stores/useSwitchStorage";
-import { useWalletStore } from "../../stores/wallet/walletStore";
 import { SortOrder } from "../../types/commonTypes";
 import { NationalCurrencies } from "../../types/currency";
 import { NftStatus } from "../../types/nft";
@@ -20,6 +16,7 @@ import Button from "../global/Button";
 import { SpinningLoader } from "../global/loading/SpinningLoader";
 import { NftList } from "../nft/NftList";
 import { NftsFilter } from "../nft/NftsFilter";
+import ConnectWalletModal from "../wallet/ConnectWalletModal";
 
 type Query = {
   sort?: SortOrder;
@@ -28,36 +25,48 @@ type Query = {
   maxPrice?: number;
   currency?: NationalCurrencies;
   status?: NftStatus;
-  rarities?: string;
+  rarities?: string | undefined;
 };
 
 type Props = {
-  collection: string;
-  totalNFts: number;
-  defaultView?: "grid" | "list" | "tab";
-  hasRarity: boolean;
+  //   collection: string;
+  //   defaultView?: "grid" | "list" | "tab";
 };
 
 const defaultSortOrder: SortOrder = "price_low_to_high";
 const defaultStatus: NftStatus = "all";
 
-export const CollectionItems: React.FC<Props> = ({
-  collection,
-  totalNFts,
-  defaultView,
-  hasRarity,
-}) => {
-  const urlQuery = new URLSearchParams(window.location.search).get(
-    "query"
-  ) as Query;
+export const CollectionItems: React.FC<Props> = (
+  {
+    //   collection,
+    //   defaultView,
+  }
+) => {
+  //create location state and window.location event listener where you will set the location state
+  const [location, setLocation] = React.useState(window.location);
+  let previousUrl = "";
+  const observer = new MutationObserver(function (mutations) {
+    if (window.location.href !== previousUrl) {
+      previousUrl = window.location.href;
+      setLocation(window.location);
+    }
+  });
+  const config = { subtree: true, childList: true };
+  observer.observe(document, config);
+
+  const urlParams = new URLSearchParams(window.location.search);
   const offerRef = React.useRef<HTMLDivElement>(null);
   const { pendingTrades } = usePendingTrades();
   const { explorerView, setExplorerView } = useSwitchStorage();
+  const collection = "claynation";
+  const defaultView = "tab";
   const { data: activeCollectionDetail } = useCollectionDetail(collection);
-  const offersQuery = useOffers({
-    collection: collection,
-    order: "price",
-  });
+  const { openConnectWalletModal, setOpenConnectWalletModal } =
+    useOpenConnectWalletModal();
+  //   const offersQuery = useOffers({
+  //     collection: collection,
+  //     order: "price",
+  //   });
   const [sortOrder, setSortOrder] = React.useState<SortOrder>(defaultSortOrder);
   const [properties, setProperties] = React.useState<string[]>([]);
   const [rarity, setRarity] = React.useState<string>("");
@@ -78,28 +87,28 @@ export const CollectionItems: React.FC<Props> = ({
 
   const [showSideFilter, setShowSideFilter] = React.useState(false);
 
-  const { stakeKey, address } = useWalletStore();
-  const assetsQuery = useNftsByAddress({ stakeKey: stakeKey || "" });
-  const walletAssets = flattenDeep(assetsQuery.data?.pages.map((x) => x.items));
-  const offers = flattenDeep(offersQuery?.data?.pages.map((x) => x.items));
-  const filteredOffers = offers.filter(
-    (offer) => offer?.createdByAddress !== address && !offer.nft
-  );
+  //   const { stakeKey, address } = useWalletStore();
+  //   const assetsQuery = useNftsByAddress({ stakeKey: stakeKey || "" });
+  //   const walletAssets = flattenDeep(assetsQuery.data?.pages.map((x) => x.items));
+  //   const offers = flattenDeep(offersQuery?.data?.pages.map((x) => x.items));
+  //   const filteredOffers = offers.filter(
+  //     (offer) => offer?.createdByAddress !== address && !offer.nft
+  //   );
 
-  const highestCollectionOffer = filteredOffers.reduce(
-    (maxOffer, currentOffer) => {
-      return currentOffer?.price > maxOffer?.price ? currentOffer : maxOffer;
-    },
-    filteredOffers[0]
-  );
+  //   const highestCollectionOffer = filteredOffers.reduce(
+  //     (maxOffer, currentOffer) => {
+  //       return currentOffer?.price > maxOffer?.price ? currentOffer : maxOffer;
+  //     },
+  //     filteredOffers[0]
+  //   );
 
-  const ownAssetOffer = walletAssets.find((x) =>
-    highestCollectionOffer?.collection?.policyIds.some(
-      (policyId) => policyId === x.policyId
-    )
-  )
-    ? highestCollectionOffer
-    : undefined;
+  //   const ownAssetOffer = walletAssets.find((x) =>
+  //     highestCollectionOffer?.collection?.policyIds.some(
+  //       (policyId) => policyId === x.policyId
+  //     )
+  //   )
+  //     ? highestCollectionOffer
+  //     : undefined;
 
   const handleCollectionOffer = () => {
     // setOpenTradeModal("makeOffer");
@@ -134,14 +143,20 @@ export const CollectionItems: React.FC<Props> = ({
     status: status,
   });
 
-  const hasCollectionRarity =
-    hasRarity !== undefined
-      ? hasRarity
-      : query.data?.pages[0]?.items[0]?.rarity?.percentage;
-
   React.useEffect(() => {
-    const { sort, properties, minPrice, maxPrice, currency, status, rarities } =
-      urlQuery;
+    const sort = urlParams.get("sort") as SortOrder;
+    const properties = urlParams.get("properties")?.split(",");
+    const minPrice = urlParams.get("minPrice")
+      ? Number(urlParams.get("minPrice"))
+      : undefined;
+    const maxPrice = urlParams.get("maxPrice")
+      ? Number(urlParams.get("maxPrice"))
+      : undefined;
+    const currency = urlParams.get("currency") as
+      | NationalCurrencies
+      | undefined;
+    const status = urlParams.get("status") as NftStatus;
+    const rarities = urlParams.get("rarities");
 
     setProperties(
       (Array.isArray(properties)
@@ -160,12 +175,17 @@ export const CollectionItems: React.FC<Props> = ({
     setStatus(status ?? defaultStatus);
     if (rarities) setRarity(rarities);
     else setRarity("");
-  }, [urlQuery]);
+  }, [location]);
 
   return (
     <>
       {/* {content} */}
       <>
+        {openConnectWalletModal && (
+          <ConnectWalletModal
+            onClose={() => setOpenConnectWalletModal(false)}
+          />
+        )}
         <NftsFilter
           view={view}
           setView={handleViewChange}
@@ -173,16 +193,16 @@ export const CollectionItems: React.FC<Props> = ({
           minPrice={minPrice}
           maxPrice={maxPrice}
           currency={currency}
-          showRarity={!!hasCollectionRarity}
+          showRarity={!!activeCollectionDetail?.hasRarity}
           searchValue={searchValue}
           onSearchValueChange={setSearchValue}
-          totalNfts={totalNFts}
+          totalNfts={activeCollectionDetail?.nftsInCirculation}
           setShowSideFilter={setShowSideFilter}
           showSideFilter={showSideFilter}
           activeCollectionDetail={activeCollectionDetail}
         />
         <div className="flex relative min-h-[700px] w-full gap-[15px] first:mt-0">
-          {showSideFilter && (
+          {/* {showSideFilter && (
             <CollectionSideFilter
               key="sideFilter"
               collections={[collection]}
@@ -192,10 +212,10 @@ export const CollectionItems: React.FC<Props> = ({
               showRarity={!!hasCollectionRarity}
               searchValue={searchValue}
               onSearchValueChange={setSearchValue}
-              totalNfts={totalNFts}
+              totalNfts={activeCollectionDetail?.nftsInCirculation}
               onClose={() => setShowSideFilter(false)}
             />
-          )}
+          )} */}
           <div
             style={{
               zIndex: "2",
@@ -208,7 +228,7 @@ export const CollectionItems: React.FC<Props> = ({
               view={explorerView}
               query={query}
               isFilterOpen={showSideFilter}
-              ownAssetOffer={ownAssetOffer}
+              //   ownAssetOffer={ownAssetOffer}
               //   setOpenTradeModal={setOpenTradeModal}
               hideCollectionName
             />

@@ -64,7 +64,7 @@ const Modal: React.FC<Props> = ({
     <>
       <div
         onClick={onClose}
-        className="fixed inset-0 z-40 h-full w-full bg-black/30 backdrop-blur-[1px]"
+        className="fixed inset-0 z-[100] h-full w-full bg-black/30 backdrop-blur-[1px]"
         aria-hidden="true"
       />
       <div
@@ -79,7 +79,7 @@ const Modal: React.FC<Props> = ({
           maxWidth: maxWidth || "400px",
           maxHeight: maxHeight,
         }}
-        className="thin-scrollbar text-text bg-background fixed left-1/2 top-1/2 z-50 -translate-x-1/2 -translate-y-1/2 overflow-y-auto rounded-xl p-3 md:p-5"
+        className="thin-scrollbar z-[101] text-text bg-background fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 overflow-y-auto rounded-xl p-3 md:p-5"
         onClick={(e) => e.stopPropagation()}
       >
         {!hideClose && (

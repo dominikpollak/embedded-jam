@@ -84,6 +84,7 @@ export const NftsFilter: React.FC<Props> = ({
   activeCollectionDetail,
 }) => {
   const urlParams = new URLSearchParams(window.location.search);
+  const sort = urlParams.get("sort");
   const { pendingTrades } = usePendingTrades();
   const defaultSortOrder: SortOrder = "price_low_to_high";
   const { isTradeModalOpen } = useIsTradeModalOpen();
@@ -138,22 +139,22 @@ export const NftsFilter: React.FC<Props> = ({
 
   React.useEffect(() => {
     if (urlParams.has("sort")) {
-      setSortOrder(urlParams.get("sort") as SortOrder);
+      setSortOrder(sort as SortOrder);
     }
-  }, [urlParams]);
+  }, [sort]);
 
   return (
     <>
       {/* {content} */}
       <div
-        className={`bg-background mb-6 ml-auto flex justify-end gap-4 ${
+        className={`bg-background duration-200 mb-6 ml-auto flex justify-end gap-4 ${
           isTradeModalOpen
             ? "relative z-1 w-[calc(100%-285px)]"
             : "sticky z-[3] w-full"
         } ${
           scrolled
-            ? "shadow-md p-[10px] pt-[15px] rounded-b-[15px] rounded-l-[15px] duration-100"
-            : "p-0"
+            ? "shadow-md top-0 p-[10px] pt-[15px] rounded-b-[15px] rounded-l-[15px]"
+            : "p-0 top-auto"
         }`}
         ref={wrapperRef}
       >
@@ -201,7 +202,7 @@ export const NftsFilter: React.FC<Props> = ({
               placeholder={
                 totalNfts ? `Search ${totalNfts} NFTs` : "Search NFTs"
               }
-              wrapperClassName="hidden md:block w-[500px]"
+              wrapperClassName="hidden md:flex w-[500px]"
               inputClassName="w-full"
             />
           )}

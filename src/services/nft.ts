@@ -42,7 +42,8 @@ export const fetchExploreNfts = async ({
         status: status === "all" ? undefined : status,
       }) + propertiesParam,
   });
-  return res.data as ExploreNftsResponse;
+
+  return res as ExploreNftsResponse;
 };
 
 export const useExploreNfts = (
@@ -52,7 +53,7 @@ export const useExploreNfts = (
     useExploreNfts.__key(params),
     ({ pageParam }) => fetchExploreNfts({ ...params, pageParam }),
     {
-      getNextPageParam: getNextPageParam,
+      getNextPageParam,
       refetchOnWindowFocus: false,
     }
   );
@@ -73,7 +74,7 @@ export const fetchNftsByAddress = async (
       ...rest,
     }),
   });
-  return res.data as NftsByAddressResponse;
+  return res as NftsByAddressResponse;
 };
 
 export const useNftsByAddress = (
@@ -118,7 +119,7 @@ export const fetchOffers = async ({
     }),
   });
 
-  return res.data as NftOffersResponse;
+  return res as NftOffersResponse;
 };
 export const useOffers = (params: FetchNftOffersParams) =>
   useInfiniteQuery(

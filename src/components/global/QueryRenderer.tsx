@@ -98,8 +98,7 @@ export const InfiniteQueryRenderer = <
     return <ErrorPage onRetry={() => query.refetch()} />;
   }
 
-  const items = flattenDeep(query.data.pages.map((x) => x.items));
-
+  const items = flattenDeep(query.data?.pages?.map((x) => x.items));
   if (!query.isLoading && items && items.length === 0 && emptyPage) {
     return <EmptyPage {...emptyPage} />;
   }

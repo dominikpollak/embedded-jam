@@ -7,7 +7,7 @@ export const fetchExchangeRates = async (): Promise<ExchangeRates> => {
   const res = await customFetchHandler({
     url: getUrl("coins/cardano/exchange-rates", {}),
   });
-  return res.data as ExchangeRates;
+  return res as ExchangeRates;
 };
 
 export const useExchangeRates = () =>

@@ -168,7 +168,8 @@ export const Tooltip: React.FC<Props> = ({
   const [tId, setTId] = React.useState<any>(null);
   const [position, setPosition] = React.useState(initialPosition);
 
-  const baseStyles = "absolute rounded-lg p-4 text-left shadow-lg z-50";
+  const baseStyles =
+    "absolute bg-background text-text rounded-lg p-4 text-left shadow-lg z-50";
   const visibilityStyles = isHovered ? "block" : "hidden";
   const backgroundColor = bgcolor || colors.text;
 

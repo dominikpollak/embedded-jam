@@ -1,5 +1,6 @@
-import { Search, X } from "lucide-react";
+import { Search } from "lucide-react";
 import type { DOMAttributes } from "react";
+import React from "react";
 import { colors } from "../../constants/colors";
 
 type Props = {
@@ -37,14 +38,11 @@ export const TextField = ({
         value={value}
         onChange={onchange}
         placeholder={placeholder}
-        className={`${showSearchIcon && "pl-10"} pr-8 ${inputClassName}`}
+        className={`p-2 bg-background border border-border rounded-lg ${
+          showSearchIcon && "pl-10"
+        } pr-8 ${inputClassName}`}
         onKeyDown={onKeyDown}
       />
-      {value && (
-        <button className="absolute right-2" onClick={() => onchange("")}>
-          <X size={20} color={colors.grayText} />
-        </button>
-      )}
     </div>
   );
 };
