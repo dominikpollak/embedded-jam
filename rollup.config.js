@@ -84,7 +84,7 @@ export default [
           insertAt: "top",
         },
       }),
-      typescript({ tsconfig: "./tsconfig.json" }),
+      typescript({ tsconfig: "./tsconfig.umd.json" }),
       json(),
       nodeResolve({
         browser: true,
