@@ -1,4 +1,5 @@
 import { Bolt } from "lucide-react";
+import React from "react";
 import { colors } from "../../constants/colors";
 import { NftOffer } from "../../types/nft";
 import { TradeModal, TradeModalData } from "../../types/trade";
@@ -13,7 +14,11 @@ interface Props {
     | undefined;
 }
 
-const InstantSellCard = ({ offer, view, setOpenTradeModal }: Props) => {
+const InstantSellCard: React.FC<Props> = ({
+  offer,
+  view,
+  setOpenTradeModal,
+}) => {
   if (!setOpenTradeModal) return null;
 
   if (view === "tab") {

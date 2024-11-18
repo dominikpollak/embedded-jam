@@ -1,3 +1,5 @@
+import React from "react";
+
 type Props = {
   height?: string;
   width?: string;
@@ -8,7 +10,7 @@ type Props = {
   className?: string;
 };
 
-export const LoadingSkeleton = ({
+export const LoadingSkeleton: React.FC = ({
   height = "100%",
   width = "100%",
   maxHeight = "100%",

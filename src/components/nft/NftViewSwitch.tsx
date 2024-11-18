@@ -1,4 +1,5 @@
 import { Grid3X3, LayoutGrid, List } from "lucide-react";
+import React from "react";
 import { colors } from "../../constants/colors";
 
 export type Views = "grid" | "list" | "tab";
