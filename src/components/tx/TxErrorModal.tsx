@@ -14,13 +14,6 @@ const TxErrorModal: React.FC<Props> = ({ setOpenWarningModal, txFunc }) => (
     minWidth="90%"
   >
     <div className="flex flex-col items-center text-center">
-      <Button
-        leftIcon="close"
-        onClick={() => setOpenWarningModal(false)}
-        variant="tertiary"
-        size="sm"
-        className="absolute top-[30px] right-[30px"
-      />
       {/* <ImageWrapper>
           <Image
             src={ErrorAvatar}

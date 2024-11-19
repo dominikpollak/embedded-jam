@@ -3,30 +3,44 @@ import type { DOMAttributes } from "react";
 import React from "react";
 import { colors } from "../../constants/colors";
 
-type Props = {
+export interface TextFieldProps
+  extends Omit<
+    React.InputHTMLAttributes<HTMLInputElement>,
+    "size" | "onBlur" | "onFocus" | "value" | "color"
+  > {
   placeholder: string;
   className?: string;
-  value: string;
-  onchange: (e: any) => void;
   showSearchIcon?: boolean;
   inputClassName?: string;
   wrapperClassName?: string;
   options?: React.HTMLInputTypeAttribute;
   outline?: boolean;
   onKeyDown?: DOMAttributes<HTMLInputElement>["onKeyDown"];
-};
+  value: string;
+  onEnterPress?: (e: React.BaseSyntheticEvent) => void;
+  rightText?: string;
+  width?: number;
+  leftText?: string;
+  errorMessage?: string;
+  multiline?: boolean;
+  autofocus?: boolean;
+  ignoreIFrameTheme?: boolean;
+}
 
 export const TextField = ({
   placeholder,
   value,
-  onchange,
   inputClassName,
   wrapperClassName,
   showSearchIcon,
   onKeyDown,
-}: Props) => {
+  onEnterPress,
+  ...rest
+}: TextFieldProps) => {
   return (
-    <div className={`relative flex items-center ${wrapperClassName}`}>
+    <div
+      className={`relative flex shrink w-full items-center ${wrapperClassName}`}
+    >
       {showSearchIcon && (
         <Search
           size={20}
@@ -36,12 +50,18 @@ export const TextField = ({
       )}
       <input
         value={value}
-        onChange={onchange}
         placeholder={placeholder}
-        className={`p-2 bg-background border border-border rounded-lg ${
+        className={`p-2 bg-background border border-border w-full rounded-lg ${
           showSearchIcon && "pl-10"
-        } pr-8 ${inputClassName}`}
-        onKeyDown={onKeyDown}
+        } ${inputClassName}`}
+        onKeyDown={(e) => {
+          if (e.key === "Enter") {
+            if (onEnterPress) {
+              onEnterPress(e);
+            }
+          }
+        }}
+        {...rest}
       />
     </div>
   );

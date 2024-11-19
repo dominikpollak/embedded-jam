@@ -1,4 +1,12 @@
 import { getPropertiesParams } from "../utils/queryParams";
+import { config } from "./config";
+
+type ExplorerEntity =
+  | "tokenPolicy"
+  | "token"
+  | "address"
+  | "transaction"
+  | "stakeKey";
 
 export const urls = {
   index: "/",
@@ -27,3 +35,16 @@ export const urls = {
   embed: "/embed",
   migrate: "/migrate",
 };
+
+const explorerPaths: Record<ExplorerEntity, string> = {
+  tokenPolicy: "policy",
+  token: "asset",
+  address: "address",
+  stakeKey: "stake",
+  transaction: "tx",
+};
+
+export const getExplorerUrl = (
+  entity: ExplorerEntity,
+  hash: string | undefined
+) => `${config.explorerUrl}${explorerPaths[entity]}/${hash || ""}`;

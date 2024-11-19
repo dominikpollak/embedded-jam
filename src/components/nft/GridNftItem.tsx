@@ -22,7 +22,7 @@ import { RarityBadge } from "./RarityBadge";
 
 type Props = Optional<NftToken, "collection">;
 
-export const TabNftItem: React.FC<Props> = ({
+export const GridNftItem: React.FC<Props> = ({
   displayName,
   collection,
   policyId,
@@ -189,7 +189,7 @@ export const TabNftItem: React.FC<Props> = ({
 
           {/* NAME */}
           <span
-            className={`font-bold text-[18px] leading-6 h-[55px] ${
+            className={`font-bold text-[14px] leading-[19px] h-[50px] ${
               displayName.split(" ").length === 1
                 ? "w-full overflow-hidden text-ellipsis whitespace-nowrap"
                 : ""
@@ -202,7 +202,7 @@ export const TabNftItem: React.FC<Props> = ({
         {/* COLLECTION */}
         <div className="flex flex-col justify-start w-full gap-[1px]">
           <span
-            className={`nft-name text-text leading-[25px] ${
+            className={`nft-name text-text text-[13px] leading-[16px] ${
               disableBuyNow
                 ? "w-full overflow-hidden text-ellipsis whitespace-nowrap"
                 : ""
@@ -225,6 +225,7 @@ export const TabNftItem: React.FC<Props> = ({
               percentage={rarity.percentage}
               nftsInCollection={collection?.nftsInCirculation || 0}
               order={rarity.order}
+              type="small"
             />
           )}
         </div>
@@ -232,13 +233,13 @@ export const TabNftItem: React.FC<Props> = ({
         <span className="price flex w-full flex-col text-text text-right order-1 grid-row-span-2 ml-auto">
           {/* PRICE IN ADA */}
           {sellOrder && (
-            <span className="text-[17px] leading-6 font-bold mb-0">
+            <span className="text-[14px] leading-[20px] font-bold mb-0">
               {lovelaceToAda(sellOrder.price)}
             </span>
           )}
           {/* PRICE IN DOLLARS */}
           {sellOrder && (
-            <span className="text-grayText text-[14px] leading-4">
+            <span className="text-grayText text-[12px] leading-[15px]">
               {formatPrice(sellOrder.price)}
             </span>
           )}

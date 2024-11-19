@@ -31,3 +31,32 @@ useCollectionDetail.__key = (collection: string | null) => [
   "collectionDetail",
   collection,
 ];
+
+type CollectionsResponse = {
+  items: {
+    name: string;
+    displayName: string;
+    policyIds: string[];
+  }[];
+};
+
+export const fetchCollections = async (): Promise<CollectionsResponse> => {
+  const res = await customFetchHandler({ url: getUrl("nfts/collections", {}) });
+  const collections = res.data as CollectionsResponse;
+  const sortedCollections = collections.items.sort((a, b) =>
+    a.displayName.toLocaleLowerCase() < b.displayName.toLocaleLowerCase()
+      ? -1
+      : 1
+  );
+  return {
+    items: sortedCollections,
+  };
+};
+
+export const useCollections = (enabled: boolean = true) =>
+  useQuery(useCollections.__key, fetchCollections, {
+    staleTime: 1_000 * 60 * 10,
+    enabled: enabled,
+  });
+
+useCollections.__key = ["collections"];

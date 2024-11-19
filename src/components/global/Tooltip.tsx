@@ -1,325 +1,117 @@
-import React, { useRef } from "react";
+import type { ReactNode } from "react";
 
-type TooltipPosition =
-  | "top"
-  | "right"
-  | "bottom"
-  | "left"
-  | "right-bottom"
-  | "left-top"
-  | "right-top";
+import React, { useLayoutEffect, useRef, useState } from "react";
 
-// const TooltipBox = styled.div<TooltipBoxProps>`
-//   position: absolute;
-//   background-color: ${({ bgcolor }) => bgcolor || colors.text};
-//   border-radius: 15px;
-//   padding: 15px;
-//   line-height: 1;
-//   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15), 0 4px 8px rgba(0, 0, 0, 0.2);
-//   width: ${({ width }) => (width ? `${width}px` : "auto")};
-//   text-align: left;
-//   display: ${(props) => (props.isHovered ? "unset" : "none")};
-//   z-index: 1000;
+interface TooltipProps {
+  children: ReactNode;
+  content: ReactNode;
+  delay?: number;
+  forceDirection?: "top" | "bottom" | "left" | "right";
+  hide?: boolean;
+}
 
-//   ${({ position, offset }) => {
-//     switch (position) {
-//       case "top":
-//         return css`
-//           bottom: calc(100% + 5px);
-//           left: calc(50% - ${offset}px);
-//           transform: translateX(-50%);
-//         `;
-//       case "right":
-//         return css`
-//           transform: translateY(-50%);
-//           top: 50%;
-//           left: calc(100% + 5px);
-//         `;
-//       case "bottom":
-//         return css`
-//           top: calc(100% + 5px);
-//           left: 50%;
-//           transform: translateX(-50%);
-//         `;
-//       case "left":
-//         return css`
-//           transform: translateY(-50%) translateX(-100%);
-//           top: 50%;
-//           left: -5px;
-//         `;
-//       case "right-bottom":
-//         return css`
-//           top: calc(100% + 26px);
-//           left: calc(100% - 140px);
-//           transform: translateX(-50%);
-//         `;
-//       case "left-top":
-//         return css`
-//           bottom: calc(100% + 5px);
-//           left: calc(50% - ${offset}px);
-//           transform: translateX(-80%);
-//         `;
-//       case "right-top":
-//         return css`
-//           bottom: calc(100% + 5px);
-//           left: calc(50% - ${offset}px);
-//           transform: translateX(-30%);
-//         `;
-//     }
-//   }}
-
-//   &:after {
-//     content: "";
-//     position: absolute;
-//     border: 5px solid;
-//     border-color: ${({ bgcolor }) => bgcolor || colors.text};
-
-//     ${({ position, offset }) => {
-//       switch (position) {
-//         case "top":
-//           return css`
-//             border-right-color: transparent;
-//             border-left-color: transparent;
-//             border-bottom-color: transparent;
-//             left: calc(50% - 5px + ${offset}px);
-//             top: 100%;
-//           `;
-//         case "bottom":
-//           return css`
-//             border-right-color: transparent;
-//             border-top-color: transparent;
-//             border-left-color: transparent;
-//             top: unset;
-//             bottom: 100%;
-//             left: calc(50% - 5px);
-//           `;
-//         case "left":
-//           return css`
-//             border-right-color: transparent;
-//             border-top-color: transparent;
-//             border-bottom-color: transparent;
-//             left: 100%;
-//             top: calc(50% - 5px);
-//           `;
-//         case "right":
-//           return css`
-//             border-top-color: transparent;
-//             border-left-color: transparent;
-//             border-bottom-color: transparent;
-//             right: 100%;
-//             left: unset;
-//             top: calc(50% - 5px);
-//           `;
-//         case "right-bottom":
-//           return css`
-//             border-width: 12px;
-//             border-right-color: transparent;
-//             border-top-color: transparent;
-//             border-left-color: transparent;
-//             top: unset;
-//             bottom: 100%;
-//             left: calc(82%);
-//             border-left-width: 20px;
-//           `;
-//         case "left-top":
-//           return css`
-//             border-right-color: transparent;
-//             border-left-color: transparent;
-//             border-bottom-color: transparent;
-//             left: calc(80% - 5px + ${offset}px);
-//             top: 100%;
-//           `;
-//         case "right-top":
-//           return css`
-//             border-right-color: transparent;
-//             border-left-color: transparent;
-//             border-bottom-color: transparent;
-//             left: calc(30% - 5px + ${offset}px);
-//             top: 100%;
-//           `;
-//       }
-//     }};
-//   }
-// `;
-
-type Props = {
-  position: TooltipPosition;
-  text: React.ReactNode;
-  children: JSX.Element;
-  preferredWidth?: number;
-  closeDelay?: number;
-  show?: boolean;
-};
-export const Tooltip: React.FC<Props> = ({
-  position: initialPosition,
-  text,
+export const Tooltip: React.FC<TooltipProps> = ({
   children,
-  preferredWidth,
-  closeDelay = 0,
-  show = true,
+  content,
+  delay,
+  forceDirection,
+  hide = false,
 }) => {
-  const [isHovered, setIsHovered] = React.useState(false);
+  let timeout: any;
+  const [visible, setVisible] = useState<boolean>(false);
+  const [direction, setDirection] = useState<
+    "top" | "bottom" | "left" | "right"
+  >(forceDirection || "top");
+
   const tooltipRef = useRef<HTMLDivElement>(null);
-  const [offset, setOffset] = React.useState(0);
-  const [width, setWidth] = React.useState(preferredWidth);
-  const [tId, setTId] = React.useState<any>(null);
-  const [position, setPosition] = React.useState(initialPosition);
+  const tooltipItemRef = useRef<HTMLDivElement>(null);
 
-  const baseStyles =
-    "absolute bg-darker rounded-lg text-text rounded-lg p-4 text-left shadow-lg z-50";
-  const visibilityStyles = isHovered ? "block" : "hidden";
-
-  const positionStyles = (() => {
-    switch (position) {
-      case "top":
-        return {
-          bottom: `calc(100% + 5px)`,
-          left: `calc(50% - ${offset}px)`,
-          transform: "translateX(-50%)",
-        };
-      case "right":
-        return {
-          top: "50%",
-          left: `calc(100% + 5px)`,
-          transform: "translateY(-50%)",
-        };
-      case "bottom":
-        return {
-          top: `calc(100% + 5px)`,
-          left: "50%",
-          transform: "translateX(-50%)",
-        };
-      case "left":
-        return {
-          top: "50%",
-          left: `calc(-${offset}px)`,
-          transform: "translateY(-50%) translateX(-100%)",
-        };
-      case "right-bottom":
-        return {
-          top: `calc(100% + 5px)`,
-          left: `calc(100% + 5px)`,
-        };
-      case "left-top":
-        return {
-          bottom: `calc(100% + 5px)`,
-          left: `calc(-${offset}px)`,
-        };
-      case "right-top":
-        return {
-          bottom: `calc(100% + 5px)`,
-          left: `calc(100% + 5px)`,
-        };
-      default:
-        return {};
-    }
-  })();
-
-  React.useEffect(() => {
-    if (!tooltipRef.current) return;
-
-    const left = tooltipRef.current.getBoundingClientRect().left;
-    const right = tooltipRef.current.getBoundingClientRect().right;
-
-    let newOffset = 0;
-    const screenWidth = document.documentElement.clientWidth;
-
-    if (left < 0) {
-      newOffset = left;
-      if (right - newOffset > screenWidth) {
-        setWidth(screenWidth);
-      } else {
-        setOffset(newOffset);
-      }
-    } else if (right > screenWidth) {
-      newOffset = right - screenWidth;
-      if (left - newOffset < 0) {
-        setWidth(screenWidth);
-      } else {
-        setOffset(newOffset);
-      }
-    }
-  }, []);
-
-  const handleClick = () => {
-    setIsHovered((prev) => !prev);
+  const showTooltip = () => {
+    if (hide) return;
+    clearTimeout(timeout);
+    setVisible(true);
   };
 
-  const handleMouseEnter = () => {
-    if (!show) return;
-
-    if (tId) {
-      clearTimeout(tId);
-    }
-    setIsHovered(true);
+  const hideTooltip = () => {
+    timeout = setTimeout(() => {
+      setVisible(false);
+    }, delay || 100);
   };
 
-  const handleMouseLeave = () => {
-    if (!show) return;
+  useLayoutEffect(() => {
+    if (
+      !visible ||
+      !tooltipRef.current ||
+      !tooltipItemRef.current ||
+      forceDirection
+    )
+      return;
 
-    if (tId) {
-      clearTimeout(tId);
-    }
-    const timeoutId = setTimeout(() => setIsHovered(false), closeDelay);
-    setTId(timeoutId);
-  };
-
-  React.useEffect(() => {
-    if (!tooltipRef.current) return;
-
+    const tooltipItemRect = tooltipItemRef.current.getBoundingClientRect();
     const tooltipRect = tooltipRef.current.getBoundingClientRect();
     const viewportWidth = window.innerWidth;
     const viewportHeight = window.innerHeight;
+    const spaceLeft = tooltipRect.left;
+    const spaceRight = viewportWidth - tooltipRect.right;
+    const spaceTop = tooltipRect.top;
+    const spaceBottom = viewportHeight - tooltipRect.bottom;
 
-    if (tooltipRect.right > viewportWidth) {
-      setPosition("left");
-    }
-    if (tooltipRect.bottom > viewportHeight) {
-      setPosition("top");
-    }
-    if (tooltipRect.left < 0) {
-      setPosition("right");
-    }
-    if (tooltipRect.top < 0) {
-      setPosition("bottom");
-    }
     if (
-      tooltipRect.right > viewportWidth &&
-      tooltipRect.bottom > viewportHeight
+      spaceTop >= tooltipItemRect.height &&
+      !(spaceRight < tooltipItemRect.width) &&
+      !(spaceLeft < tooltipItemRect.width)
     ) {
-      setPosition("right-bottom");
+      setDirection("top");
+    } else if (
+      spaceRight < tooltipItemRect.width &&
+      spaceLeft >= tooltipItemRect.width
+    ) {
+      setDirection("left");
+    } else if (
+      spaceLeft < tooltipItemRect.width &&
+      spaceRight >= tooltipItemRect.width
+    ) {
+      setDirection("right");
+    } else if (
+      spaceTop < tooltipItemRect.height &&
+      spaceBottom >= tooltipItemRect.height &&
+      !(spaceRight < tooltipItemRect.width) &&
+      spaceLeft >= tooltipItemRect.width
+    ) {
+      setDirection("bottom");
     }
-    if (tooltipRect.left < 0 && tooltipRect.top < 0) {
-      setPosition("left-top");
-    }
-    if (tooltipRect.right > viewportWidth && tooltipRect.top < 0) {
-      setPosition("right-top");
-    }
-  }, [isHovered]);
+  }, [visible]);
 
   return (
     <div
-      className="relative inline-flex z-1"
-      onMouseEnter={() => handleMouseEnter()}
-      onMouseLeave={() => handleMouseLeave()}
+      onMouseEnter={showTooltip}
+      onMouseLeave={hideTooltip}
+      onTouchStart={showTooltip}
+      onTouchEnd={hideTooltip}
+      className="relative z-10 inline-block"
+      ref={tooltipRef}
     >
-      <div onClick={handleClick}>{children}</div>
-      <div
-        className={`bg-background text-text ${
-          isHovered ? "opacity-100" : "opacity-0"
-        } transition-opacity duration-100`}
-      >
+      {children}
+      {visible && (
         <div
-          className={`${baseStyles} ${visibilityStyles}`}
-          style={{
-            width: width ? `${width}px` : "auto",
-            ...positionStyles,
-          }}
-          ref={tooltipRef}
+          ref={tooltipItemRef}
+          onMouseEnter={showTooltip}
+          onMouseLeave={hideTooltip}
+          className={`
+            absolute z-50 transform rounded-xl border border-border bg-background px-4 py-2 text-sm
+            ${direction === "top" && "bottom-0 left-1/2 mb-4 -translate-x-1/2"}
+            ${
+              direction === "right" && "left-full top-1/2 ml-2 -translate-y-1/2"
+            }
+            ${direction === "bottom" && "left-1/2 top-0 mt-4 -translate-x-1/2"}
+            ${
+              direction === "left" && "right-full top-1/2 mr-2 -translate-y-1/2"
+            }
+          `}
         >
-          {text}
+          {content}
         </div>
-      </div>
+      )}
     </div>
   );
 };

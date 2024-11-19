@@ -144,6 +144,9 @@ export const JamDropdown: React.FC<Props> = ({
         className="cursor-pointer"
         onClick={toggle}
         ref={menuOpenerRef}
+        style={{
+          height: "42px",
+        }}
       >
         <span className="text-[13px] leading-[17px] font-bold uppercase">
           {actualLabel.value}
@@ -165,7 +168,7 @@ export const JamDropdown: React.FC<Props> = ({
                 <TextField
                   placeholder="Search collection"
                   value={search}
-                  onchange={(e) => setSearch(e.target.value)}
+                  onChange={(e) => setSearch(e.target.value)}
                   showSearchIcon
                 />
               </SearchBox>

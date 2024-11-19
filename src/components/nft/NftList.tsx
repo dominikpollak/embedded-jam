@@ -4,10 +4,12 @@ import { usePendingTrades } from "../../hooks/usePendingTrades";
 import { ExploreNftsResponse, NftOffer } from "../../types/nft";
 import { TradeModal, TradeModalData } from "../../types/trade";
 import { isCompleteNft } from "../../utils/nft/nft";
+import { GridNftSkeleton } from "../global/loading/GridNftSkeleton";
 import { TabNftSkeleton } from "../global/loading/TabNftSkeleton";
 import { InfiniteQueryRenderer } from "../global/QueryRenderer";
+import { GridNftItem } from "./GridNftItem";
 import InstantSellCard from "./InstantSellCard";
-import TabNftItem from "./TabNftItem";
+import { TabNftItem } from "./TabNftItem";
 
 interface NftListProps {
   query?: UseInfiniteQueryResult<ExploreNftsResponse, unknown>;
@@ -65,20 +67,13 @@ export const NftList: React.FC<NftListProps> = ({
         );
       case "grid":
         return (
-          <TabItems
-            setOpenTradeModal={setOpenTradeModal}
+          <GridItems
             items={items}
             owned={owned}
             ownAssetOffer={ownAssetOffer}
+            setOpenTradeModal={setOpenTradeModal}
             hideCollectionName={hideCollectionName}
           />
-          // <GridItems
-          //   items={items}
-          //   owned={owned}
-          //   ownAssetOffer={ownAssetOffer}
-          //   setOpenTradeModal={setOpenTradeModal}
-          //   hideCollectionName={hideCollectionName}
-          // />
         );
       case "list":
         return (
@@ -166,3 +161,39 @@ const TabItems: React.FC<NftListItemProps> = ({
   </div>
 );
 TabItems.displayName = "TabItems";
+
+const GridItems: React.FC<NftListItemProps> = ({
+  items,
+  disableBuyNow,
+  owned,
+  ownAssetOffer,
+  setOpenTradeModal,
+  hideCollectionName,
+}) => (
+  <div className="grid gap-6 grid-cols-[repeat(auto-fill,_minmax(130px,_1fr))]">
+    {ownAssetOffer && (
+      <div>
+        <InstantSellCard
+          setOpenTradeModal={setOpenTradeModal}
+          view="grid"
+          offer={ownAssetOffer}
+        />
+      </div>
+    )}
+    {items.map((x, index) => {
+      if (!isCompleteNft(x)) return <GridNftSkeleton key={index} />;
+
+      return (
+        <GridNftItem
+          key={x.assetNameHex}
+          displayFormat="grid"
+          disableBuyNow={disableBuyNow}
+          hideCollectionName={hideCollectionName}
+          owned={owned}
+          {...x}
+        />
+      );
+    })}
+  </div>
+);
+GridItems.displayName = "GridItems";

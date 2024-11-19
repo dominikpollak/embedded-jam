@@ -4,6 +4,7 @@ import React from "react";
 import { tradeTypeLabels } from "../../constants/nft";
 import useDebounce from "../../hooks/common/useDebounce";
 import { usePendingTrades } from "../../hooks/usePendingTrades";
+import { useTradeModals } from "../../hooks/wallet/useTradeModals";
 import { useCollectionDetail } from "../../services/collection";
 import { useExchangeRates } from "../../services/exchangeRates";
 import { useExploreNfts } from "../../services/nft";
@@ -18,6 +19,7 @@ import { SpinningLoader } from "../global/loading/SpinningLoader";
 import { NftList } from "../nft/NftList";
 import { NftsFilter } from "../nft/NftsFilter";
 import ConnectWalletModal from "../wallet/ConnectWalletModal";
+import CollectionSideFilter from "./CollectionSideFilter";
 
 type Query = {
   sort?: SortOrder;
@@ -29,20 +31,11 @@ type Query = {
   rarities?: string | undefined;
 };
 
-type Props = {
-  //   collection: string;
-  //   defaultView?: "grid" | "list" | "tab";
-};
-
 const defaultSortOrder: SortOrder = "price_low_to_high";
 const defaultStatus: NftStatus = "all";
 
-export const CollectionItems: React.FC<Props> = (
-  {
-    //   collection,
-    //   defaultView,
-  }
-) => {
+// theme prop + affiliate link prop
+export const CollectionItems: React.FC = () => {
   const [currentUrl, setCurrentUrl] = React.useState(window.location.href);
 
   React.useEffect(() => {
@@ -82,9 +75,9 @@ export const CollectionItems: React.FC<Props> = (
   const [view, setView] = React.useState<"grid" | "list" | "tab">(
     defaultView || explorerView
   );
-  //   const { content, setOpenTradeModal } = useTradeModals({
-  //     collection: activeCollectionDetail || undefined,
-  //   });
+  const { content, setOpenTradeModal } = useTradeModals({
+    collection: activeCollectionDetail || undefined,
+  });
 
   const [showSideFilter, setShowSideFilter] = React.useState(false);
 
@@ -112,7 +105,7 @@ export const CollectionItems: React.FC<Props> = (
   //     : undefined;
 
   const handleCollectionOffer = () => {
-    // setOpenTradeModal("makeOffer");
+    setOpenTradeModal("makeOffer");
   };
 
   React.useEffect(() => {
@@ -145,7 +138,6 @@ export const CollectionItems: React.FC<Props> = (
   });
 
   React.useEffect(() => {
-    console.log("currentUrl", currentUrl);
     const sort = urlParams.get("sort") as SortOrder;
     const properties = urlParams.get("properties")?.split(",");
     const minPrice = urlParams.get("minPrice")
@@ -166,11 +158,11 @@ export const CollectionItems: React.FC<Props> = (
         : [properties].filter(Boolean)) as string[]
     );
 
-    if (!isUndefined(minPrice)) setMinPrice(minPrice);
+    if (minPrice) setMinPrice(Number(minPrice));
     else setMinPrice(null);
-    if (!isUndefined(maxPrice)) setMaxPrice(maxPrice);
+    if (maxPrice) setMaxPrice(maxPrice);
     else setMaxPrice(null);
-    if (!isUndefined(currency)) setCurrency(currency);
+    if (currency) setCurrency(currency);
     else setCurrency("ada");
 
     setSortOrder(sort ?? defaultSortOrder);
@@ -181,7 +173,7 @@ export const CollectionItems: React.FC<Props> = (
 
   return (
     <>
-      {/* {content} */}
+      {content}
       <>
         {openConnectWalletModal && (
           <ConnectWalletModal
@@ -204,20 +196,20 @@ export const CollectionItems: React.FC<Props> = (
           activeCollectionDetail={activeCollectionDetail}
         />
         <div className="flex relative min-h-[700px] w-full gap-[15px] first:mt-0">
-          {/* {showSideFilter && (
+          {showSideFilter && (
             <CollectionSideFilter
               key="sideFilter"
               collections={[collection]}
               minPrice={minPrice}
               maxPrice={maxPrice}
               currency={currency}
-              showRarity={!!hasCollectionRarity}
+              showRarity={!!activeCollectionDetail?.hasRarity}
               searchValue={searchValue}
               onSearchValueChange={setSearchValue}
               totalNfts={activeCollectionDetail?.nftsInCirculation}
               onClose={() => setShowSideFilter(false)}
             />
-          )} */}
+          )}
           <div
             style={{
               zIndex: "2",
@@ -231,7 +223,7 @@ export const CollectionItems: React.FC<Props> = (
               query={query}
               isFilterOpen={showSideFilter}
               //   ownAssetOffer={ownAssetOffer}
-              //   setOpenTradeModal={setOpenTradeModal}
+              setOpenTradeModal={setOpenTradeModal}
               hideCollectionName
             />
           </div>

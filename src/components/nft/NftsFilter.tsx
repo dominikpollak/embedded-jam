@@ -1,4 +1,4 @@
-import { Filter, Grid3X3, LayoutGrid, List } from "lucide-react";
+import { Grid3X3, LayoutGrid, List, SlidersHorizontal } from "lucide-react";
 import React from "react";
 import { UseQueryResult } from "react-query";
 import { colors } from "../../constants/colors";
@@ -148,10 +148,8 @@ export const NftsFilter: React.FC<Props> = ({
       {/* {content} */}
       <div
         className={`bg-background duration-200 mb-6 ml-auto flex justify-end gap-4 ${
-          isTradeModalOpen
-            ? "relative z-1 w-[calc(100%-285px)]"
-            : "sticky z-[3] w-full"
-        } ${
+          isTradeModalOpen ? "relative" : "sticky z-[3]"
+        } w-full ${
           scrolled
             ? "shadow-md top-0 p-[10px] pt-[15px] rounded-b-[15px] rounded-l-[15px]"
             : "p-0 top-auto"
@@ -161,7 +159,7 @@ export const NftsFilter: React.FC<Props> = ({
         <div className="w-full max-w-full flex items-start gap-4 md:flex-row md:items-center">
           <Button
             leftIcon={
-              <Filter
+              <SlidersHorizontal
                 color={colors.text}
                 className={showSideFilter ? "rotate-90" : "rotate-0"}
               />
@@ -196,7 +194,7 @@ export const NftsFilter: React.FC<Props> = ({
             <TextField
               showSearchIcon
               value={searchValue || ""}
-              onchange={(e: any) => {
+              onChange={(e: any) => {
                 onSearchValueChange(e.target.value);
               }}
               placeholder={

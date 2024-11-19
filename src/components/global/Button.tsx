@@ -33,7 +33,7 @@ const Button: React.FC<Props> = ({
   };
 
   const commonClasses =
-    "flex box-border max-w-fit justify-center min-w-fit items-center rounded-[8px] font-medium duration-150 hover:scale-[101%] active:scale-[98%] disabled:cursor-not-allowed disabled:opacity-50";
+    "flex box-border max-w-fit justify-center min-w-fit items-center rounded-[8px] font-bold duration-150 hover:scale-[101%] active:scale-[98%] disabled:cursor-not-allowed disabled:opacity-50";
 
   const variantClasses = {
     primary: "bg-text text-background border-text border hover:border-text",

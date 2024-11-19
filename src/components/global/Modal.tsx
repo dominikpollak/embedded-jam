@@ -86,7 +86,7 @@ const Modal: React.FC<Props> = ({
           <button
             aria-label="Close dialog"
             onClick={onClose}
-            className="absolute right-3 top-3 cursor-pointer md:right-5 md:top-5"
+            className="absolute z-[101] right-3 top-3 cursor-pointer md:right-5 md:top-5"
           >
             <span aria-hidden="true">
               <X color={colors.text} />

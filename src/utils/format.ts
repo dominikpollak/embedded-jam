@@ -20,7 +20,9 @@ export const cropString = (str: string, maxLength: number) => {
   return str.slice(0, maxLength / 2 - 4) + "..." + str.slice(-maxLength / 2);
 };
 
-export const lovelaceToAda = (lovelace: number): string => {
+export const lovelaceToAda = (lovelace?: number): string => {
+  if (lovelace === undefined) return "0";
+
   const ada = lovelace / 1e6;
 
   return `₳ ${formatNumberWithSuffix(ada)}`;
@@ -36,15 +38,21 @@ export const priceToLovelace = (
   exchangeRates: ExchangeRates | undefined
 ): number | undefined => {
   return exchangeRates
-    ? lovelaceToAdaWithoutSuffix(value / exchangeRates[targetCurrency])
+    ? adaToLovelace(value / exchangeRates[targetCurrency])
     : undefined;
 };
+
+export const adaToLovelace = (value: number) => {
+  return Math.round(value * 1_000_000);
+};
+
 export const priceOrAdaToLovelace = (
   value: number,
   targetCurrency: NationalCurrencies | "ada",
   exchangeRates: ExchangeRates | undefined
 ): number | undefined => {
-  if (targetCurrency === "ada") return lovelaceToAdaWithoutSuffix(value);
+  console.log("priceOrAdaToLovelace", value, targetCurrency, exchangeRates);
+  if (targetCurrency === "ada") return adaToLovelace(value);
   if (exchangeRates === undefined) return undefined;
   return priceToLovelace(value, targetCurrency, exchangeRates);
 };
