@@ -1,5 +1,4 @@
 import detectUrlChange from "detect-url-change";
-import { isUndefined } from "lodash";
 import React from "react";
 import { tradeTypeLabels } from "../../constants/nft";
 import useDebounce from "../../hooks/common/useDebounce";
@@ -53,7 +52,6 @@ export const CollectionItems: React.FC = () => {
   const { pendingTrades } = usePendingTrades();
   const { explorerView, setExplorerView } = useSwitchStorage();
   const collection = "Introverts";
-  const defaultView = "tab";
   const { data: activeCollectionDetail } = useCollectionDetail(collection);
   const { openConnectWalletModal, setOpenConnectWalletModal } =
     useOpenConnectWalletModal();
@@ -72,9 +70,7 @@ export const CollectionItems: React.FC = () => {
   const [currency, setCurrency] = React.useState<NationalCurrencies | "ada">(
     "ada"
   );
-  const [view, setView] = React.useState<"grid" | "list" | "tab">(
-    defaultView || explorerView
-  );
+  const [view, setView] = React.useState<"grid" | "list" | "tab">(explorerView);
   const { content, setOpenTradeModal } = useTradeModals({
     collection: activeCollectionDetail || undefined,
   });
@@ -108,13 +104,6 @@ export const CollectionItems: React.FC = () => {
     setOpenTradeModal("makeOffer");
   };
 
-  React.useEffect(() => {
-    if (!defaultView) return;
-
-    setView(defaultView);
-    setExplorerView(defaultView);
-  }, [defaultView, setExplorerView]);
-
   const exchangeRates = useExchangeRates();
 
   const handleViewChange = (newView: "grid" | "list" | "tab") => {
@@ -139,7 +128,8 @@ export const CollectionItems: React.FC = () => {
 
   React.useEffect(() => {
     const sort = urlParams.get("sort") as SortOrder;
-    const properties = urlParams.get("properties")?.split(",");
+    const properties = urlParams.getAll("properties");
+    console.log("properties", properties);
     const minPrice = urlParams.get("minPrice")
       ? Number(urlParams.get("minPrice"))
       : undefined;
@@ -174,82 +164,78 @@ export const CollectionItems: React.FC = () => {
   return (
     <>
       {content}
-      <>
-        {openConnectWalletModal && (
-          <ConnectWalletModal
-            onClose={() => setOpenConnectWalletModal(false)}
+      {openConnectWalletModal && (
+        <ConnectWalletModal onClose={() => setOpenConnectWalletModal(false)} />
+      )}
+      <NftsFilter
+        view={view}
+        setView={handleViewChange}
+        collections={[collection]}
+        minPrice={minPrice}
+        maxPrice={maxPrice}
+        currency={currency}
+        showRarity={!!activeCollectionDetail?.hasRarity}
+        searchValue={searchValue}
+        onSearchValueChange={setSearchValue}
+        totalNfts={activeCollectionDetail?.nftsInCirculation}
+        setShowSideFilter={setShowSideFilter}
+        showSideFilter={showSideFilter}
+        activeCollectionDetail={activeCollectionDetail}
+      />
+      <div className="flex relative bg-background text-text min-h-[700px] w-full gap-[15px] first:mt-0">
+        {showSideFilter && (
+          <CollectionSideFilter
+            key="sideFilter"
+            collections={[collection]}
+            minPrice={minPrice}
+            maxPrice={maxPrice}
+            currency={currency}
+            showRarity={!!activeCollectionDetail?.hasRarity}
+            searchValue={searchValue}
+            onSearchValueChange={setSearchValue}
+            totalNfts={activeCollectionDetail?.nftsInCirculation}
+            onClose={() => setShowSideFilter(false)}
           />
         )}
-        <NftsFilter
-          view={view}
-          setView={handleViewChange}
-          collections={[collection]}
-          minPrice={minPrice}
-          maxPrice={maxPrice}
-          currency={currency}
-          showRarity={!!activeCollectionDetail?.hasRarity}
-          searchValue={searchValue}
-          onSearchValueChange={setSearchValue}
-          totalNfts={activeCollectionDetail?.nftsInCirculation}
-          setShowSideFilter={setShowSideFilter}
-          showSideFilter={showSideFilter}
-          activeCollectionDetail={activeCollectionDetail}
-        />
-        <div className="flex relative min-h-[700px] w-full gap-[15px] first:mt-0">
-          {showSideFilter && (
-            <CollectionSideFilter
-              key="sideFilter"
-              collections={[collection]}
-              minPrice={minPrice}
-              maxPrice={maxPrice}
-              currency={currency}
-              showRarity={!!activeCollectionDetail?.hasRarity}
-              searchValue={searchValue}
-              onSearchValueChange={setSearchValue}
-              totalNfts={activeCollectionDetail?.nftsInCirculation}
-              onClose={() => setShowSideFilter(false)}
-            />
-          )}
-          <div
-            style={{
-              zIndex: "2",
-              width: "100%",
-              height: "100%",
-              margin: "0",
-            }}
-          >
-            <NftList
-              view={explorerView}
-              query={query}
-              isFilterOpen={showSideFilter}
-              //   ownAssetOffer={ownAssetOffer}
-              setOpenTradeModal={setOpenTradeModal}
-              hideCollectionName
-            />
-          </div>
-          <div
-            ref={offerRef}
-            className="fixed bottom-1 right-1 z-10 pt-[4px] pr-[5px] pb-[6px] pl-[5px] rounded-[20px] shadow-md bg-background md:hidden"
-          >
-            <Button
-              onClick={handleCollectionOffer}
-              size="xs"
-              variant="primary"
-              label={
-                Object.keys(pendingTrades).length !== 0 ? (
-                  <div className="flex items-center w-fit lg:flex-row gap-4">
-                    <SpinningLoader size={25} />
-                    <p>{tradeTypeLabels[pendingTrades[0].type]} pending</p>
-                  </div>
-                ) : (
-                  "Make offer"
-                )
-              }
-              disabled={Object.keys(pendingTrades).length !== 0}
-            />
-          </div>
+        <div
+          style={{
+            zIndex: "2",
+            width: "100%",
+            height: "100%",
+            margin: "0",
+          }}
+        >
+          <NftList
+            view={explorerView}
+            query={query}
+            isFilterOpen={showSideFilter}
+            //   ownAssetOffer={ownAssetOffer}
+            setOpenTradeModal={setOpenTradeModal}
+            hideCollectionName
+          />
         </div>
-      </>
+        <div
+          ref={offerRef}
+          className="fixed bottom-1 right-1 z-10 pt-[4px] pr-[5px] pb-[6px] pl-[5px] rounded-[20px] shadow-md bg-background md:hidden"
+        >
+          <Button
+            onClick={handleCollectionOffer}
+            size="xs"
+            variant="primary"
+            label={
+              Object.keys(pendingTrades).length !== 0 ? (
+                <div className="flex items-center w-fit lg:flex-row gap-4">
+                  <SpinningLoader size={25} />
+                  <p>{tradeTypeLabels[pendingTrades[0].type]} pending</p>
+                </div>
+              ) : (
+                "Make offer"
+              )
+            }
+            disabled={Object.keys(pendingTrades).length !== 0}
+          />
+        </div>
+      </div>
     </>
   );
 };

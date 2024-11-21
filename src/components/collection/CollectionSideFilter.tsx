@@ -9,6 +9,7 @@ import { NationalCurrencies } from "../../types/currency";
 import { NftStatus } from "../../types/nft";
 import { NestedOption, SearchBox } from "../global/dropdown/BaseDropdownParts";
 import PriceFilter from "../global/filter/PriceFilter";
+import { PropertiesFilter } from "../global/filter/PropertiesFilter";
 import RarityFilter from "../global/filter/RarityFilter";
 import { SearchedText } from "../global/SearchedText";
 import { TextField } from "../global/TextField";
@@ -110,7 +111,7 @@ const CollectionSideFilter = ({
 
   React.useEffect(() => {
     const sort = urlParams.get("sort") as SortOrder;
-    const properties = urlParams.get("properties")?.split(",");
+    const properties = urlParams.getAll("properties");
     const minPrice = urlParams.get("minPrice")
       ? Number(urlParams.get("minPrice"))
       : undefined;
@@ -175,7 +176,7 @@ const CollectionSideFilter = ({
           <button
             className={`relative text-[15px] border-none bg-none font-medium cursor-pointer text-grayText ${
               activeWindow === "filter"
-                ? "text-text after:block after:w-full after:h-[2px] after:bg-text after:content-none after:absolute after:bottom-[-11px]"
+                ? "text-text border-b-2 border-text"
                 : ""
             }`}
             onClick={() => setActiveWindow("filter")}
@@ -324,12 +325,12 @@ const CollectionSideFilter = ({
           )}
         </>
       )}
-      {/* {activeWindow === "traits" && (
+      {activeWindow === "traits" && (
         <PropertiesFilter
           properties={properties}
           activeCollectionDetail={activeCollectionDetail}
         />
-      )} */}
+      )}
     </section>
   );
 };

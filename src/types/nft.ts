@@ -176,3 +176,15 @@ export type FetchNftOffersParams = {
   order?: OfferOrder;
   pendingTrades?: Record<string, Trade>;
 };
+
+export type RoyaltyInfo = {
+  royaltyPercentage: number;
+  royaltyAddressStr: string;
+};
+
+export type NftInfo = {
+  policyId: string;
+  assetNameHex: string;
+  displayName: string;
+  image: string;
+};

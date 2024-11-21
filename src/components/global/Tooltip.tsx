@@ -99,13 +99,13 @@ export const Tooltip: React.FC<TooltipProps> = ({
           onMouseLeave={hideTooltip}
           className={`
             absolute z-50 transform rounded-xl border border-border bg-background px-4 py-2 text-sm
-            ${direction === "top" && "bottom-0 left-1/2 mb-4 -translate-x-1/2"}
+            ${direction === "top" && "bottom-0 left-1/2 mb-6 -translate-x-1/2"}
             ${
-              direction === "right" && "left-full top-1/2 ml-2 -translate-y-1/2"
+              direction === "right" && "left-full top-1/2 ml-4 -translate-y-1/2"
             }
-            ${direction === "bottom" && "left-1/2 top-0 mt-4 -translate-x-1/2"}
+            ${direction === "bottom" && "left-1/2 top-0 mt-6 -translate-x-1/2"}
             ${
-              direction === "left" && "right-full top-1/2 mr-2 -translate-y-1/2"
+              direction === "left" && "right-full top-1/2 mr-4 -translate-y-1/2"
             }
           `}
         >

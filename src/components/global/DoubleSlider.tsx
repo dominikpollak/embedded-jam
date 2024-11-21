@@ -1,5 +1,4 @@
-import React from "react";
-import ReactSlider from "react-slider";
+import React, { useEffect, useRef, useState } from "react";
 import { colors } from "../../constants/colors";
 
 type Props = {
@@ -15,57 +14,86 @@ const DoubleSlider: React.FC<Props> = ({
   max,
   onChange,
   onAfterChange,
-  min,
+  min = 0,
 }) => {
-  const Thumb = (props: any, state: any) => {
-    const { key, ...restProps } = props;
-    return (
-      <div
-        key={key}
-        {...restProps}
-        className="after:bg-background after:rounded-[50%] after:-translate-x-1/2 after:-translate-y-1/2 after:content-none after:absolute after:top-1/2 after:left-1/2 after:w-[15px] after:h-[15px] relative h-[25px] w-[25px] leading-[25px] text-[11px] font-medium text-center bg-text text-black rounded-[50%] px-[5px] cursor-grab"
-      />
-    );
+  const [values, setValues] = useState(defaultValue);
+  const sliderRef = useRef<HTMLDivElement>(null);
+  const draggingIndex = useRef<number | null>(null);
+
+  const handleMouseMove = (event: MouseEvent) => {
+    if (draggingIndex.current !== null && sliderRef.current) {
+      const rect = sliderRef.current.getBoundingClientRect();
+      const newValue = Math.round(
+        Math.min(
+          max,
+          Math.max(
+            min,
+            min + ((event.clientX - rect.left) / rect.width) * (max - min)
+          )
+        )
+      );
+      setValues((prevValues) => {
+        const newValues = [...prevValues];
+        newValues[draggingIndex.current!] = newValue;
+        return newValues;
+      });
+    }
   };
 
-  const Track = (props: any, state: any) => {
-    const { key, ...restProps } = props;
-    return (
-      <div
-        key={key}
-        {...restProps}
-        className="top-[10px] bottom-0 rounded-[999px]"
-        index={state.index}
-        style={{
-          color: colors.text,
-          background:
-            state.index === 2
-              ? colors.grayText
-              : state.index === 1
-              ? colors.text
-              : colors.grayText,
-        }}
-      />
-    );
+  const handleMouseUp = () => {
+    if (draggingIndex.current !== null) {
+      draggingIndex.current = null;
+      document.removeEventListener("mousemove", handleMouseMove);
+      document.removeEventListener("mouseup", handleMouseUp);
+      setValues((prevValues) => {
+        onAfterChange(prevValues[0], prevValues[1]);
+        return prevValues;
+      });
+    }
   };
+
+  const handleMouseDown = (index: number) => (event: React.MouseEvent) => {
+    draggingIndex.current = index;
+    document.addEventListener("mousemove", handleMouseMove);
+    document.addEventListener("mouseup", handleMouseUp);
+  };
+
+  useEffect(() => {
+    onChange(values[0], values[1]);
+  }, [values, onChange]);
+
+  const getThumbStyle = (value: number) => ({
+    left: `calc(${((value - min) / (max - min)) * 100}% - 12.5px)`,
+    backgroundColor: colors.text,
+  });
 
   return (
-    <ReactSlider
-      className="w-full h-[15px] my-[10px]"
-      onAfterChange={(value: any) => {
-        onAfterChange(value[0], value[1]);
-      }}
-      onChange={(value: any) => {
-        onChange(value[0], value[1]);
-      }}
-      pearling
-      defaultValue={defaultValue as any}
-      renderTrack={Track}
-      renderThumb={Thumb}
-      max={max}
-      min={min || 0}
-      minDistance={1}
-    />
+    <div
+      className="w-[calc(100%-25px)] h-[15px] my-[10px] relative"
+      ref={sliderRef}
+    >
+      <div className="absolute top-[10px] bottom-0 w-full bg-border rounded-full" />
+      <div
+        className="absolute top-[10px] bottom-0 rounded-full"
+        style={{
+          left: `calc(${((values[0] - min) / (max - min)) * 100}% - 12.5px)`,
+          right: `calc(${
+            100 - ((values[1] - min) / (max - min)) * 100
+          }% - 12.5px)`,
+          backgroundColor: colors.text,
+        }}
+      />
+      {values.map((value, index) => (
+        <div
+          key={index}
+          className="absolute h-[25px] w-[25px] leading-[25px] text-[11px] font-medium text-center text-black rounded-full px-[5px] cursor-grab"
+          style={getThumbStyle(value)}
+          onMouseDown={handleMouseDown(index)}
+        >
+          <div className="absolute top-1/2 left-1/2 w-[15px] h-[15px] bg-background rounded-full transform -translate-x-1/2 -translate-y-1/2" />
+        </div>
+      ))}
+    </div>
   );
 };
 

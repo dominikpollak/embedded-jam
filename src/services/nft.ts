@@ -1,12 +1,15 @@
-import { useInfiniteQuery } from "react-query";
+import { useInfiniteQuery, useQuery } from "react-query";
+import { config } from "../constants/config";
 import {
   ExploreNftsResponse,
   FetchExploreNftsParams,
   FetchNftOffersParams,
   FetchNftsByAddress,
+  NftInfo,
   NftOffersResponse,
   NftsByAddressResponse,
 } from "../types/nft";
+import { TokenBalance } from "../types/wallet";
 import { getUrl } from "../utils/getUrl";
 import { getNextPageParam } from "../utils/queryParams";
 import { customFetchHandler } from "./fetchWrapper";
@@ -136,3 +139,37 @@ export const useOffers = (params: FetchNftOffersParams) =>
   );
 
 useOffers.__key = (params: FetchNftOffersParams) => ["offers", params];
+
+export const fetchNftInfo = async (
+  assetIds: TokenBalance[]
+): Promise<{ items: NftInfo[] }> => {
+  const res = await customFetchHandler({
+    url: `${config.backendUrl}nfts/find-nfts`,
+    data: {
+      assetIds: assetIds
+        ? assetIds.map((item) => ({
+            assetNameHex: item.assetName,
+            policyId: item.policyId,
+          }))
+        : [],
+    },
+    method: "POST",
+  });
+
+  return res.data as { items: NftInfo[] };
+};
+
+export const useNftInfo = (assetIds: TokenBalance[] | undefined) => {
+  return useQuery(
+    useNftInfo.__key(assetIds),
+    () => fetchNftInfo(assetIds || []),
+    {
+      enabled: assetIds !== undefined,
+    }
+  );
+};
+
+useNftInfo.__key = (assetIds: TokenBalance[] | undefined) => [
+  "receivedOffers",
+  assetIds,
+];

@@ -18,7 +18,9 @@ export const ErrorPage: React.FC<Props> = ({
   return (
     <div
       className={`${
-        expand ? "flex justify-center flex-col h-[calc(100vh-70px)]" : ""
+        expand
+          ? "flex justify-center items-center flex-col h-[calc(100vh-70px)]"
+          : ""
       } my-0 mx-auto mb-0 text-center content-center max-w-[434px]`}
     >
       <div className="my-4">

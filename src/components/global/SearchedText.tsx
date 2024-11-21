@@ -17,7 +17,7 @@ export const SearchedText: React.FC<Props> = ({
   if (searchedValue === "")
     return (
       <span
-        className="text-[13px] font-bold leading-[17px] uppercase break-all whitespace-normal"
+        className="text-[13px] font-bold leading-[17px] uppercase text-left whitespace-normal"
         style={
           uppercase ? { textTransform: "uppercase" } : { textTransform: "none" }
         }

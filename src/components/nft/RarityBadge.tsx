@@ -21,7 +21,7 @@ type Props = {
   showAbsoluteOrder?: boolean;
   showTooltip?: boolean;
   type?: "small" | "smaller";
-  theme?: "dark" | "light" | "dimmed" | "blue" | undefined;
+  className?: string;
 };
 export const RarityBadge: React.FC<Props> = ({
   percentage,
@@ -30,7 +30,7 @@ export const RarityBadge: React.FC<Props> = ({
   showAbsoluteOrder = false,
   showTooltip = true,
   type,
-  theme,
+  className,
 }) => {
   const rarityOrder = getRarityOrder(percentage);
   const text = showAbsoluteOrder
@@ -45,7 +45,7 @@ export const RarityBadge: React.FC<Props> = ({
         type === "small" || type === "smaller"
           ? "py-0 px-[7px] h-[16px]"
           : "py-0 px-[10px] h-[25px]"
-      } `}
+      }`}
       style={{
         color: rarityColors[rarityOrder].text,
         backgroundColor: rarityColors[rarityOrder].background,
@@ -73,7 +73,7 @@ export const RarityBadge: React.FC<Props> = ({
   );
 
   return showTooltip ? (
-    <div className="rarity">
+    <div className={`rarity ${className}`}>
       <Tooltip
         content={
           <div className="whitespace-nowrap">
@@ -85,6 +85,6 @@ export const RarityBadge: React.FC<Props> = ({
       </Tooltip>
     </div>
   ) : (
-    <div className="rarity">{content}</div>
+    <div className={`rarity ${className}`}>{content}</div>
   );
 };

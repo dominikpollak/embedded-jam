@@ -10,10 +10,9 @@ type Props = {
   leftIcon?: React.ReactNode;
   className?: string;
   disabled?: boolean;
-  onClick?: () => void;
 };
 
-const Button: React.FC<Props> = ({
+const Button: React.FC<React.ComponentProps<"button"> & Props> = ({
   size,
   variant,
   label,
@@ -22,7 +21,7 @@ const Button: React.FC<Props> = ({
   leftIcon,
   className,
   disabled,
-  onClick,
+  ...props
 }) => {
   const sizeClasses = {
     xs: "py-1 px-1 text-[12px]",
@@ -56,7 +55,7 @@ const Button: React.FC<Props> = ({
 
   return (
     <button
-      onClick={onClick}
+      {...props}
       className={`${commonClasses} ${sizeClasses[size]} ${variantClasses[variant]} ${className}`}
       disabled={disabled}
     >

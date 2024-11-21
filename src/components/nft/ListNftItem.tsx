@@ -6,7 +6,7 @@ import { useOpenConnectWalletModal } from "../../stores/states/useOpenConnectWal
 import { useWalletStore } from "../../stores/wallet/walletStore";
 import { NftListData, NftToken } from "../../types/nft";
 import {
-  cropString,
+  formatHash,
   lovelaceToAda,
   useFormatFullPrice,
 } from "../../utils/format";
@@ -16,13 +16,14 @@ import {
   Optional,
 } from "../../utils/nft/nft";
 import { translatePunycode } from "../../utils/nft/translatePunycode";
+import Button from "../global/Button";
 import TxErrorModal from "../tx/TxErrorModal";
 import { NftThumbnail } from "./NftThumbnail";
 import { RarityBadge } from "./RarityBadge";
 
-type Props = Optional<NftToken, "collection">;
+type Props = Optional<NftToken, "collection"> & { isFilterOpen?: boolean };
 
-export const GridNftItem: React.FC<Props> = ({
+export const ListNftItem: React.FC<Props> = ({
   displayName,
   collection,
   policyId,
@@ -33,6 +34,7 @@ export const GridNftItem: React.FC<Props> = ({
   disableBuyNow,
   owner,
   owned = false,
+  isFilterOpen,
 }) => {
   const affilCode = window.location.search.split("a=")[1];
   const { setOpenConnectWalletModal } = useOpenConnectWalletModal();
@@ -132,8 +134,11 @@ export const GridNftItem: React.FC<Props> = ({
           setOpenWarningModal={setOpenWarningModal}
         />
       )}
-
-      <section className="group relative grid-cols-1 w-full h-full pb-3 border-b border-border grid hover:border-text">
+      <section
+        className={`group grid items-center grid-cols-4 xl:grid-cols-5 p-[15px] pr-0 border-b border-border ${
+          isFilterOpen ? "lg:grid-cols-5" : "md:grid-cols-5 lg:grid-cols-6"
+        }`}
+      >
         {/* IMAGE */}
         <a
           href={
@@ -144,10 +149,10 @@ export const GridNftItem: React.FC<Props> = ({
               })
             ) + `${affilCode ? `?a=${affilCode}` : ""}`
           }
-          className="relative w-full flex gap-4 flex-col col-span-2 items-start"
+          className="relative xl:col-span-1 w-full flex items-center gap-4 col-span-2"
         >
           <div
-            className={`relative w-full h-full ${
+            className={`relative shrink-0 w-[45px] h-[45px] ${
               sellOrder?.source === "jam" ? "jam" : ""
             }`}
           >
@@ -158,25 +163,13 @@ export const GridNftItem: React.FC<Props> = ({
               displayFormat="tab"
               imageLoaded={imageLoaded}
             /> */}
-            {!disableBuyNow && (
-              <button
-                className="hidden group-hover:flex group-hover:justify-center absolute rounded-[150px] max-w-[70%] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-transparent text-white border-2 border-white cursor-pointer transition-all duration-200 z-[25] hover:bg-white hover:text-black"
-                onClick={handleTransaction}
-              >
-                <span className="uppercase font-bold whitespace-nowrap block rounded-[10%] py-[10px] px-[25px] text-[14px]">
-                  {renderTransactionButton()}
-                </span>
-              </button>
-            )}
             <NftThumbnail
               lazy
-              className={`flex aspect-square w-full h-full object-cover rounded-[10%] ${
-                disableBuyNow
-                  ? ""
-                  : "group-hover:brightness-[30%] transition-filter duration-150"
+              className={`flex aspect-square w-[45px] h-[45px] shrink-0 object-cover rounded-[20%] ${
+                disableBuyNow ? "" : ""
               }`}
-              width={130}
-              height={130}
+              width={45}
+              height={45}
               src={generateImgLinkingUrl(
                 getAssetFingerprint({
                   policyId: policyId,
@@ -189,61 +182,84 @@ export const GridNftItem: React.FC<Props> = ({
 
           {/* NAME */}
           <span
-            className={`font-bold text-[14px] leading-[19px] h-[50px] ${
-              displayName.split(" ").length === 1
-                ? "w-full overflow-hidden text-ellipsis whitespace-nowrap"
-                : ""
-            }`}
+            className={`font-bold text-[14px] whitespace-nowrap overflow-hidden block text-ellipsis md:text-[16px] leading-[25px] `}
           >
-            {cropString(formattedDisplayName, 48)}
+            {formattedDisplayName}
           </span>
         </a>
 
         {/* COLLECTION */}
-        <div className="flex flex-col justify-start w-full gap-[1px]">
-          <span
-            className={`nft-name text-text text-[13px] leading-[16px] ${
-              disableBuyNow
-                ? "w-full overflow-hidden text-ellipsis whitespace-nowrap"
-                : ""
-            } ${hideCollectionName ? "hidden" : ""}`}
-            title={collection?.displayName}
+        <span
+          className={`nft-name hidden lg:block text-text text-[15px] ${
+            isFilterOpen ? "lg:hidden xl:block" : "lg:block"
+          } ${
+            disableBuyNow
+              ? "w-full overflow-hidden text-ellipsis whitespace-nowrap"
+              : ""
+          } ${hideCollectionName ? "hidden" : ""}`}
+          title={collection?.displayName}
+        >
+          <a
+            href={
+              urls.collectionDetail(collectionName || "") +
+              `${affilCode ? `?a=${affilCode}` : ""}`
+            }
           >
-            <a
-              href={
-                urls.collectionDetail(collectionName || "") +
-                `${affilCode ? `?a=${affilCode}` : ""}`
-              }
-            >
-              {collection?.displayName}
-            </a>
-          </span>
+            {hideCollectionName
+              ? formatHash(owner?.address, "normal") || ""
+              : collection?.displayName}
+          </a>
+        </span>
 
-          {/* RARITY */}
-          {rarity && (
-            <RarityBadge
-              percentage={rarity.percentage}
-              nftsInCollection={collection?.nftsInCirculation || 0}
-              order={rarity.order}
-              type="smaller"
-            />
-          )}
-        </div>
+        {/* RARITY */}
+        {rarity ? (
+          <RarityBadge
+            percentage={rarity.percentage}
+            nftsInCollection={collection?.nftsInCirculation || 0}
+            order={rarity.order}
+            className={`w-fit hidden ${
+              isFilterOpen ? "md:hidden" : "md:block"
+            } lg:block`}
+          />
+        ) : (
+          <div className="h-[30px]" />
+        )}
 
-        <span className="price flex w-full flex-col text-text text-right order-1 grid-row-span-2 ml-auto">
+        <span className="price flex w-full justify-start flex-col text-text text-right">
           {/* PRICE IN ADA */}
           {sellOrder && (
-            <span className="text-[14px] leading-[20px] font-bold mb-0">
+            <span className="text-[14px] md:text-[16px] text-left leading-6 font-bold mb-0">
               {lovelaceToAda(sellOrder.price)}
             </span>
           )}
           {/* PRICE IN DOLLARS */}
           {sellOrder && (
-            <span className="text-grayText text-[12px] leading-[15px]">
+            <span className="text-grayText text-[12px] leading-4 text-left">
               {formatPrice(sellOrder.price)}
             </span>
           )}
         </span>
+
+        <div className="flex justify-end items-center ml-auto gap-[10px] w-[60px] mr-[15px]">
+          <Button
+            label={renderTransactionButton()}
+            size="md"
+            variant="primary"
+            onClick={handleTransaction}
+            className="white-space-nowrap w-[90px] h-full py-[5px] px-[20px]"
+          />
+          {renderTransactionButton(true) && (
+            <Button
+              label={renderTransactionButton(true)}
+              size="md"
+              variant="secondary"
+              onClick={(e) => handleTransaction(e, true)}
+              className={`hidden white-space-nowrap w-[90px] h-full py-[5px] px-[20px] ${
+                isFilterOpen ? "lg:block" : "md:block"
+              }`}
+            />
+          )}
+        </div>
       </section>
     </>
   );

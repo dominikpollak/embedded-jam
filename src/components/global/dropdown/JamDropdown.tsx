@@ -148,7 +148,7 @@ export const JamDropdown: React.FC<Props> = ({
           height: "42px",
         }}
       >
-        <span className="text-[13px] leading-[17px] font-bold uppercase">
+        <span className="text-[12px] leading-[16px] font-bold uppercase">
           {actualLabel.value}
         </span>
         {!!actualLabel.hiddenValuesCount && (

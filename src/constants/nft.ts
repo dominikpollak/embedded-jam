@@ -1,5 +1,7 @@
 import { config } from "./config";
 
+export const MIN_LISTING_PRICE_ADA = 3;
+export const MAX_LISTING_PRICE_ADA = 100000000;
 export const assetUrls = {
   getThumbnail: (path: string) => `${config.assetsUrl}${path}`,
   webFile: (name: string) => `${config.resourceUrl}web/${name}`,

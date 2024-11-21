@@ -15,7 +15,6 @@ type Props = {
   priceState?: PriceState;
   collection?: CollectionDetailResponse;
   offer?: NftOffer;
-  theme?: "dark" | "light" | "dimmed" | "blue" | undefined;
 };
 
 export const ModalItemRow: React.FC<Props> = ({
@@ -23,7 +22,6 @@ export const ModalItemRow: React.FC<Props> = ({
   priceState,
   collection,
   offer,
-  theme,
 }) => {
   const formatPrice = useFormatPrice();
   const floorPrice =
@@ -68,7 +66,6 @@ export const ModalItemRow: React.FC<Props> = ({
             </span>{" "}
             {nftListing?.rarity && (
               <RarityBadge
-                theme={theme}
                 percentage={nftListing?.rarity.percentage}
                 nftsInCollection={
                   nftListing.collection?.nftsInCirculation ||

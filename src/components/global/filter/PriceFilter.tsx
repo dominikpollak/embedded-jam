@@ -1,9 +1,9 @@
 import { isNull } from "lodash";
 import React from "react";
-import { NumberInput } from "../inputs/NumberInput";
-import { ErrorContainer, SearchFields, Wrapper } from "./PriceFilterParts";
-import { SelectBox } from "../SelectBox";
 import DoubleSlider from "../DoubleSlider";
+import { NumberInput } from "../inputs/NumberInput";
+import { SelectBox } from "../SelectBox";
+import { ErrorContainer, SearchFields, Wrapper } from "./PriceFilterParts";
 
 type Props = {
   minPrice: number | null;
@@ -67,10 +67,12 @@ const PriceFilter: React.FC<Props> = ({
     handleSetPrice(min, max);
   };
 
-  console.log("selectedCurrency", selectedCurrency);
-
   return (
-    <Wrapper>
+    <Wrapper
+      style={{
+        alignItems: "center",
+      }}
+    >
       <DoubleSlider
         key={`${minPrice}-${maxPrice}`}
         onChange={handleInstantSetPrice}

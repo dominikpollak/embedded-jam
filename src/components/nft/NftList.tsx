@@ -5,10 +5,12 @@ import { ExploreNftsResponse, NftOffer } from "../../types/nft";
 import { TradeModal, TradeModalData } from "../../types/trade";
 import { isCompleteNft } from "../../utils/nft/nft";
 import { GridNftSkeleton } from "../global/loading/GridNftSkeleton";
+import { ListNftSkeleton } from "../global/loading/ListNftSkeleton";
 import { TabNftSkeleton } from "../global/loading/TabNftSkeleton";
 import { InfiniteQueryRenderer } from "../global/QueryRenderer";
 import { GridNftItem } from "./GridNftItem";
 import InstantSellCard from "./InstantSellCard";
+import { ListNftItem } from "./ListNftItem";
 import { TabNftItem } from "./TabNftItem";
 
 interface NftListProps {
@@ -77,36 +79,22 @@ export const NftList: React.FC<NftListProps> = ({
         );
       case "list":
         return (
-          <TabItems
-            setOpenTradeModal={setOpenTradeModal}
+          <ListItems
             items={items}
             owned={owned}
             ownAssetOffer={ownAssetOffer}
+            isFilterOpen={isFilterOpen}
+            setOpenTradeModal={setOpenTradeModal}
             hideCollectionName={hideCollectionName}
           />
-          // <ListItems
-          //   items={items}
-          //   owned={owned}
-          //   ownAssetOffer={ownAssetOffer}
-          //   isFilterOpen={isFilterOpen}
-          //   setOpenTradeModal={setOpenTradeModal}
-          //   hideCollectionName={hideCollectionName}
-          // />
         );
       default:
         return (
-          // <GridItems
-          //   items={items}
-          //   owned={owned}
-          //   ownAssetOffer={ownAssetOffer}
-          //   setOpenTradeModal={setOpenTradeModal}
-          //   hideCollectionName={hideCollectionName}
-          // />
-          <TabItems
-            setOpenTradeModal={setOpenTradeModal}
+          <GridItems
             items={items}
             owned={owned}
             ownAssetOffer={ownAssetOffer}
+            setOpenTradeModal={setOpenTradeModal}
             hideCollectionName={hideCollectionName}
           />
         );
@@ -170,7 +158,7 @@ const GridItems: React.FC<NftListItemProps> = ({
   setOpenTradeModal,
   hideCollectionName,
 }) => (
-  <div className="grid gap-6 grid-cols-[repeat(auto-fill,_minmax(130px,_1fr))]">
+  <div className="grid gap-6 grid-cols-[repeat(auto-fill,_minmax(140px,_1fr))]">
     {ownAssetOffer && (
       <div>
         <InstantSellCard
@@ -197,3 +185,79 @@ const GridItems: React.FC<NftListItemProps> = ({
   </div>
 );
 GridItems.displayName = "GridItems";
+
+const ListItems: React.FC<
+  NftListItemProps & {
+    isFilterOpen?: boolean;
+  }
+> = ({
+  items,
+  owned,
+  isFilterOpen,
+  ownAssetOffer,
+  setOpenTradeModal,
+  hideCollectionName,
+}) => {
+  return (
+    <div className="w-full bg-background text-text flex flex-col m-0 h-full">
+      {ownAssetOffer && (
+        <div>
+          <InstantSellCard
+            view="list"
+            offer={ownAssetOffer}
+            setOpenTradeModal={setOpenTradeModal}
+          />
+        </div>
+      )}
+      <div
+        className={`${
+          isFilterOpen
+            ? "md:grid-cols-4 lg:grid-cols-5"
+            : "md:grid-cols-5 lg:grid-cols-6"
+        } w-full [&>span]:h-[40px] pl-[15px] xl:grid-cols-5 m-0 h-[40px] text-left bg-darkerBg rounded-[10px] grid items-center grid-cols-4`}
+      >
+        <span className="bg-darkerBg col-span-2 xl:col-span-1 rounded-l-lg font-bold leading-[40px] text-[11px] uppercase">
+          Item
+        </span>
+        <span
+          className={`bg-darkerBg xl:block hidden font-bold leading-[40px] text-[11px] uppercase ${
+            isFilterOpen ? "lg:hidden xl:block" : "lg:block"
+          }`}
+        >
+          {hideCollectionName ? "Owner" : "Collection"}
+        </span>
+        <span
+          className={`hidden bg-darkerBg lg:block font-bold leading-[40px] text-[11px] uppercase ${
+            isFilterOpen ? "md:hidden" : "md:block"
+          }`}
+        >
+          Rarity
+        </span>
+        <span className="bg-darkerBg col-span-1 flex justify-start font-bold leading-[40px] text-[11px] uppercase">
+          Price
+        </span>
+        <span className="bg-darkerBg col-span-1 rounded-r-lg" />
+      </div>
+      <section className="w-full gap-4">
+        {items.map((x, index) => {
+          if (!isCompleteNft(x)) {
+            return <ListNftSkeleton key={index} isFilterOpen={isFilterOpen} />;
+          }
+
+          return (
+            <ListNftItem
+              key={x.assetNameHex}
+              displayFormat="list"
+              owner={x.owner}
+              owned={owned}
+              isFilterOpen={isFilterOpen}
+              hideCollectionName={hideCollectionName}
+              {...x}
+            />
+          );
+        })}
+      </section>
+    </div>
+  );
+};
+ListItems.displayName = "ListItems";

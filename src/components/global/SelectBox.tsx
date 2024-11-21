@@ -42,7 +42,9 @@ export const SelectBox: React.FC<Props> = ({
           </span>
         )}
         {size === "small" && (
-          <span className="text-[13px] leading-[20px] pr-[10px]">{label}</span>
+          <span className="text-[13px] leading-[20px] font-bold pr-[10px]">
+            {label}
+          </span>
         )}
         <ChevronDown size={20} color={colors.text} />
       </div>
@@ -54,7 +56,7 @@ export const SelectBox: React.FC<Props> = ({
               return (
                 <div
                   key={option}
-                  className={`box-border cursor-pointer py-1 px-2 rounded-[10px] hover:bg-darker active:bg-darker bg-background ${
+                  className={`box-border cursor-pointer py-1 px-2 rounded-[10px] hover:bg-darkerBg active:bg-darkerBg bg-background ${
                     option === label ? "active" : ""
                   }`}
                   onClick={() => handleSelection(option)}
@@ -65,7 +67,7 @@ export const SelectBox: React.FC<Props> = ({
                     </span>
                   )}
                   {size === "small" && (
-                    <span className="text-[13px] leading-[20px] pr-[10px]">
+                    <span className="text-[13px] font-bold leading-[20px] pr-[10px]">
                       {option}
                     </span>
                   )}

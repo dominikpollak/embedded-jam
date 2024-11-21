@@ -1,12 +1,19 @@
 import React from "react";
 import Modal from "../../components/global/Modal";
+import { AcceptOfferModalContent } from "../../components/trade/AcceptOfferModal";
+import { BuyModalContent } from "../../components/trade/BuyModal";
+import { CancelModalContent } from "../../components/trade/CancelModal";
+import { CancelOfferModalContent } from "../../components/trade/CancelOfferModal";
+import DelistModalContent from "../../components/trade/DelistModal";
+import { ListModalContent } from "../../components/trade/ListModal";
+import { MakeOfferModalContent } from "../../components/trade/MakeOfferModal";
+import { UpdateModalContent } from "../../components/trade/UpdateModal";
 import { useIsTradeModalOpen } from "../../stores/states/useIsTradeModalOpen";
 import { useOpenConnectWalletModal } from "../../stores/states/useOpenConnectWalletModal";
 import { useWalletStore } from "../../stores/wallet/walletStore";
 import { CollectionDetailResponse } from "../../types/collection";
 import { ExtendedNftToken, NftListData, NftOffer } from "../../types/nft";
 import { TradeModal, TradeModalData } from "../../types/trade";
-import { BuyModalContent } from "../../components/trade/BuyModal";
 
 type Props = {
   nftListing?: NftListData;
@@ -21,14 +28,14 @@ type Props = {
 };
 
 const modals: Record<TradeModal, any> = {
-  list: BuyModalContent,
+  list: ListModalContent,
   buy: BuyModalContent,
-  update: BuyModalContent,
-  cancel: BuyModalContent,
-  makeOffer: BuyModalContent,
-  cancelOffer: BuyModalContent,
-  acceptOffer: BuyModalContent,
-  delist: BuyModalContent,
+  update: UpdateModalContent,
+  cancel: CancelModalContent,
+  makeOffer: MakeOfferModalContent,
+  cancelOffer: CancelOfferModalContent,
+  acceptOffer: AcceptOfferModalContent,
+  delist: DelistModalContent,
   migrate: null,
   claim: null,
 };

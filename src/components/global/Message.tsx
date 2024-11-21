@@ -43,7 +43,7 @@ const renderColor = (type: string) => {
 
 export const Message: React.FC<Props> = ({ text, link, type }) => {
   return (
-    <div className="relative bg-darker rounded-[15px] flex items-center gap-[10px] p-[15px] text-[14px] [&>svg]:shrink-0">
+    <div className="relative bg-darkerBg rounded-[15px] flex items-center gap-[10px] p-[15px] text-[14px] [&>svg]:shrink-0">
       {renderIcon(type)}
       <div
         className="text-start"

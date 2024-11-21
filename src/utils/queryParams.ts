@@ -15,6 +15,7 @@ export const getPropertiesParams = (properties?: SelectedOptions) => {
       `[${encodeURIComponent(key)}]=${encodeURIComponent(value)}`
   );
 };
+
 export const getPropertiesFromParams = (values: string[]): SelectedOptions => {
   const decodedValues = values.map((value) => {
     const result = value.match(/\[(?<key>.*)\]=(?<value>.*)$/)?.groups;

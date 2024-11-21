@@ -1,6 +1,6 @@
 export const colors = {
   text: "var(--text)",
-  darker: "var(--darker)",
+  darkerBg: "var(--darkerBg)",
   background: "var(--background)",
   border: "var(--border)",
   grayText: "var(--grayText)",

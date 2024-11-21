@@ -1,5 +1,5 @@
 import React from "react";
-import { TradeError } from "../../types/trade";
+import { useTradeState } from "../../hooks/trade/useTradeState";
 import {
   TradeModalError,
   TradeModalResult,
@@ -68,13 +68,4 @@ export const TradeFlow: React.FC<Props> = ({
   }
 
   return children;
-};
-
-export const useTradeState = () => {
-  const [step, setStep] = React.useState<Step>("form");
-  const [error, setError] = React.useState<TradeError | any | undefined>(
-    undefined
-  );
-
-  return { step, setStep, error, setError };
 };

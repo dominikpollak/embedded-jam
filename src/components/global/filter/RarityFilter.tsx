@@ -98,7 +98,11 @@ const RarityFilter: React.FC<Props> = ({ from, to, rarity }) => {
   };
 
   return (
-    <Wrapper>
+    <Wrapper
+      style={{
+        alignItems: "center",
+      }}
+    >
       <DoubleSlider
         key={`${from}-${to}`}
         onChange={handleInstantApply}

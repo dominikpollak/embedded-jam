@@ -47,3 +47,9 @@ export type WalletInfo = {
   hasMobileApp: boolean;
   extensionUrl: string;
 };
+
+export type TokenBalance = {
+  assetName: string;
+  policyId: string;
+  balance: number;
+};

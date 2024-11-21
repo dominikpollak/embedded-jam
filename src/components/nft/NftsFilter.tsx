@@ -4,6 +4,7 @@ import { UseQueryResult } from "react-query";
 import { colors } from "../../constants/colors";
 import { tradeTypeLabels } from "../../constants/nft";
 import { usePendingTrades } from "../../hooks/usePendingTrades";
+import { useTradeModals } from "../../hooks/wallet/useTradeModals";
 import { useIsTradeModalOpen } from "../../stores/states/useIsTradeModalOpen";
 import { CollectionDetailResponse } from "../../types/collection";
 import { SortOrder, Views } from "../../types/commonTypes";
@@ -89,9 +90,9 @@ export const NftsFilter: React.FC<Props> = ({
   const defaultSortOrder: SortOrder = "price_low_to_high";
   const { isTradeModalOpen } = useIsTradeModalOpen();
   const [sortOrder, setSortOrder] = React.useState<SortOrder>(defaultSortOrder);
-  //   const { content, setOpenTradeModal } = useTradeModals({
-  //     collection: activeCollectionDetail || undefined,
-  //   });
+  const { content, setOpenTradeModal } = useTradeModals({
+    collection: activeCollectionDetail || undefined,
+  });
   const views: Views[] = ["tab", "grid", "list"];
   const viewIcons = [<LayoutGrid />, <Grid3X3 />, <List />];
   const tradeType = pendingTrades[0]
@@ -99,7 +100,7 @@ export const NftsFilter: React.FC<Props> = ({
     : "";
 
   const handleCollectionOffer = () => {
-    // setOpenTradeModal("makeOffer");
+    setOpenTradeModal("makeOffer");
   };
 
   const handleSetSortOrder = (value: string) => {
@@ -145,7 +146,7 @@ export const NftsFilter: React.FC<Props> = ({
 
   return (
     <>
-      {/* {content} */}
+      {content}
       <div
         className={`bg-background duration-200 mb-6 ml-auto flex justify-end gap-4 ${
           isTradeModalOpen ? "relative" : "sticky z-[3]"
@@ -227,7 +228,7 @@ export const NftsFilter: React.FC<Props> = ({
         {/* <VisibleTo breakpointPixels={500}> */}
         <Button
           size="sm"
-          variant="tertiary"
+          variant="secondary"
           leftIcon={viewIcons[views.indexOf(view)]}
           onClick={() => {
             let newView = views[(views.indexOf(view) + 1) % views.length];

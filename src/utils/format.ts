@@ -28,7 +28,7 @@ export const lovelaceToAda = (lovelace?: number): string => {
   return `₳ ${formatNumberWithSuffix(ada)}`;
 };
 
-const lovelaceToAdaWithoutSuffix = (lovelace: number): number => {
+export const lovelaceToAdaWithoutSuffix = (lovelace: number): number => {
   return lovelace / 1e6;
 };
 
@@ -51,7 +51,6 @@ export const priceOrAdaToLovelace = (
   targetCurrency: NationalCurrencies | "ada",
   exchangeRates: ExchangeRates | undefined
 ): number | undefined => {
-  console.log("priceOrAdaToLovelace", value, targetCurrency, exchangeRates);
   if (targetCurrency === "ada") return adaToLovelace(value);
   if (exchangeRates === undefined) return undefined;
   return priceToLovelace(value, targetCurrency, exchangeRates);

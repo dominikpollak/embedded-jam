@@ -55,7 +55,7 @@ export const ContextMenu = React.forwardRef<
     <div
       {...props}
       ref={ref}
-      className={`p-4 z-[1000] w-fit rounded-[20px] mt-[2px] origin-top shadow-md absolute bg-background flex flex-col ${
+      className={`z-[1000] w-fit rounded-lg mt-[2px] origin-top shadow-md absolute bg-background flex flex-col ${
         opento === "left" ? "right-0" : ""
       } ${opento === "topRight" ? "right-0 top-[-290px]" : ""}`}
     >
@@ -72,7 +72,7 @@ export const BaseOption = React.forwardRef<
     <button
       {...props}
       ref={ref}
-      className="py-[10px] px-4 rounded-[10px] border-none bg-transparent w-[17em] flex justify-between items-center whitespace-nowrap hover:bg-darkerBg active:bg-darkerBg"
+      className="py-[10px] px-4 rounded-lg border-none bg-transparent w-[17em] flex justify-between items-center whitespace-nowrap hover:bg-darkerBg active:bg-darkerBg"
     >
       {children}
     </button>
@@ -87,7 +87,7 @@ export const Option = React.forwardRef<
     <BaseOption
       {...props}
       ref={ref}
-      className="whitespace-normal [&>span]:overflow-hidden [&>span]:text-ellipsis [&>svg]:ml-[5px] hover:bg-darkerBg active:bg-darkerBg"
+      className="whitespace-normal [&>span]:overflow-hidden text-[12px] leading-[16px] [&>span]:text-ellipsis [&>svg]:ml-[5px] hover:bg-darkerBg active:bg-darkerBg"
     >
       {children}
     </BaseOption>
@@ -118,6 +118,21 @@ export const NestedOption = React.forwardRef<
       {...props}
       ref={ref}
       className="whitespace-normal [&>div]:overflow-hidden [&>div]:text-ellipsis text-left  hover:bg-darkerBg active:bg-darkerBg"
+    >
+      {children}
+    </BaseOption>
+  );
+});
+
+export const KeyOption = React.forwardRef<
+  HTMLButtonElement,
+  React.ComponentProps<"button">
+>(({ children, ...props }, ref) => {
+  return (
+    <BaseOption
+      {...props}
+      ref={ref}
+      className="whitespace-normal [&>span]:inline-block rounded-none border-r border-darker bg-transparent hover:bg-darkerBg active:bg-darkerBg [&>span]:pr-2 [&>span]:overflow-hidden [&>span]:text-ellipsis text-left"
     >
       {children}
     </BaseOption>
