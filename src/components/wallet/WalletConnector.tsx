@@ -10,14 +10,9 @@ import CopyButton from "../global/CopyButton";
 import Dropdown from "../global/dropdown/Dropdown";
 import ConnectWalletModal from "./ConnectWalletModal";
 
-interface Props {
-  textColor?: string;
-  bgColor?: string;
-}
-
-export const WalletConnector: React.FC<Props> = ({ textColor, bgColor }) => {
+export const WalletConnector: React.FC = () => {
   WalletConnector.displayName = "WalletConnector";
-  const { address, walletType, setWalletState, walletApi } = useWalletStore();
+  const { address, walletType, setAll, walletApi } = useWalletStore();
   const [showWalletModal, setShowWalletModal] = React.useState(false);
   const { disconnect } = useConnectWallet();
 
@@ -29,7 +24,7 @@ export const WalletConnector: React.FC<Props> = ({ textColor, bgColor }) => {
       const { type, payload } = event.data;
       switch (type) {
         case "WALLET_CONNECTED":
-          setWalletState({
+          setAll({
             address: payload.address,
             walletType: payload.walletType,
           });
@@ -63,6 +58,7 @@ export const WalletConnector: React.FC<Props> = ({ textColor, bgColor }) => {
   React.useEffect(() => {
     const getBalance = async () => {
       const balance = await getWalletBalance(walletApi!);
+      const balance2 = await walletApi?.getBalance();
       if (balance !== undefined) {
         setBalance(Number(balance.coin().to_str()));
       }

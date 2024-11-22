@@ -1,3 +1,4 @@
+import React from "react";
 import { formatHash, lovelaceToAda, useFormatPrice } from "../../utils/format";
 import { generateImgLinkingUrl } from "../../utils/nft/nft";
 import { NftThumbnail } from "./NftThumbnail";

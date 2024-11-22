@@ -21,43 +21,28 @@ const defaultState: WalletState = {
 
 //  MAY NOT WORK
 
-const customStorage = {
-  getItem: (name: string) => {
-    const data = localStorage.getItem(name);
-    return data
-      ? parse(data, (key, value) =>
-          typeof value === "string" && /^\d+n$/.test(value)
-            ? BigInt(value.slice(0, -1))
-            : value
-        )
-      : null;
-  },
-  setItem: (name: string, value: any) => {
-    localStorage.setItem(
-      name,
-      stringify(value, (key, value) =>
-        typeof value === "bigint" ? value.toString() : value
-      )
-    );
-  },
-  removeItem: (name: string) => {
-    localStorage.removeItem(name);
-  },
-};
-
 export const useWalletStore = create<
   WalletState & {
-    setWalletState: (state: Partial<WalletState>) => void;
+    setAll: (state: Partial<WalletState>) => void;
   }
 >()(
   persist(
-    (set) => ({
+    (set, get) => ({
       ...defaultState,
-      setWalletState: (state) => set(state),
+      setAll: (state) => set(state),
     }),
     {
       name: "wallet-store",
-      storage: customStorage,
+      serialize: (data) =>
+        stringify(data, (key, value) =>
+          typeof value === "bigint" ? value.toString() : value
+        ),
+      deserialize: (data) =>
+        parse(data, (key, value) =>
+          typeof value === "string" && /^\d+n$/.test(value)
+            ? BigInt(value.slice(0, -1))
+            : value
+        ),
       partialize: (state) =>
         Object.fromEntries(
           Object.entries(state).filter(([key]) =>

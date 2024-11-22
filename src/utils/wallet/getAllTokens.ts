@@ -1,9 +1,9 @@
 import { toHex, WalletApi } from "lucid-cardano";
-import { getBalance } from "./getAdaBalance";
 import { TokenBalance } from "../../types/wallet";
+import { getWalletBalance } from "./getWalletBalance";
 
 export async function getAllTokens(walletApi: WalletApi) {
-  const balance = await getBalance(walletApi);
+  const balance = await getWalletBalance(walletApi);
   let res: TokenBalance[] = [];
   const ma = balance.multiasset();
   const keys = ma?.keys();

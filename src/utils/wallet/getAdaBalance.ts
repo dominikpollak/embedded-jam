@@ -1,12 +1,7 @@
-import { Buffer } from "buffer";
-import { C, WalletApi } from "lucid-cardano";
-
-export async function getBalance(walletApi: WalletApi) {
-  const balance = await walletApi.getBalance();
-  return C.Value.from_bytes(Buffer.from(balance, "hex"));
-}
+import { WalletApi } from "lucid-cardano";
+import { getWalletBalance } from "./getWalletBalance";
 
 export async function getAdaBalance(walletApi: WalletApi): Promise<number> {
-  const balance = await getBalance(walletApi);
+  const balance = await getWalletBalance(walletApi);
   return Number(balance.coin().to_str());
 }

@@ -6,6 +6,7 @@ import { NftListData, NftOffer } from "../../types/nft";
 import { ScriptConstants } from "../../types/script";
 import { getRoyalty } from "../../utils/nft/nft";
 import { getAdaBalance } from "../../utils/wallet/getAdaBalance";
+import { getWalletBalance } from "../../utils/wallet/getWalletBalance";
 import Button from "../global/Button";
 import { PriceState } from "../global/inputs/PriceInput";
 import { SpinningLoader } from "../global/loading/SpinningLoader";
@@ -53,6 +54,7 @@ export const ModalBase: React.FC<Props> = (props) => {
       : undefined;
   const [balance, setBalance] = React.useState<number | undefined>(undefined);
   const { walletApi } = useWalletStore();
+  console.log("stored walletApi", walletApi);
 
   React.useEffect(() => {
     const handleKeyPress = (event: KeyboardEvent) => {
@@ -69,6 +71,10 @@ export const ModalBase: React.FC<Props> = (props) => {
   }, [props]);
 
   React.useEffect(() => {
+    (async () => {
+      const balance = await getWalletBalance(walletApi!);
+      console.log("balance", balance);
+    })();
     const getBalance = async () => {
       const balance = await getAdaBalance(walletApi!);
       setBalance(balance);

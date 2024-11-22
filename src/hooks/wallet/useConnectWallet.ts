@@ -18,7 +18,7 @@ const defaultState: WalletState = {
 };
 
 export const useConnectWallet = () => {
-  const { setWalletState } = useWalletStore();
+  const { setAll } = useWalletStore();
   const { tokens, removeToken } = useUserTokens();
   const [cookies, setCookie] = useCookies(["q"]);
 
@@ -29,6 +29,7 @@ export const useConnectWallet = () => {
         ? window?.cardano && window.cardano?.[walletType]
         : undefined;
     const walletApi = await wallet?.enable();
+    console.log("api", walletApi);
     const provider = new JamOnBreadProvider(
       `https://api.jamonbread.io/api/lucid`
     );
@@ -43,7 +44,7 @@ export const useConnectWallet = () => {
     }
 
     if (localStorage.getItem("disabled")) {
-      setWalletState(defaultState);
+      setAll(defaultState);
       throw new Error("Wallet is disabled");
     }
 
@@ -61,7 +62,7 @@ export const useConnectWallet = () => {
       cookie: userTrackCookie,
     });
 
-    setWalletState({
+    setAll({
       walletType,
       address,
       stakeKey,
@@ -76,7 +77,7 @@ export const useConnectWallet = () => {
   };
 
   const disconnect = () => {
-    setWalletState(defaultState);
+    setAll(defaultState);
   };
 
   return { connect, disconnect };
