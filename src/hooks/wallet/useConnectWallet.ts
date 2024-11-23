@@ -1,6 +1,5 @@
 import { JamOnBreadProvider, JobCardano } from "@jamonbread/sdk";
-import type { WalletApi } from "lucid-cardano";
-import { Lucid } from "lucid-cardano";
+import type { Lucid, WalletApi } from "lucid-cardano";
 import { useCookies } from "react-cookie";
 import { v4 as uuidv4 } from "uuid";
 import { postLogUser } from "../../services/postLogUser";
@@ -28,11 +27,19 @@ export const useConnectWallet = () => {
       typeof window !== "undefined"
         ? window?.cardano && window.cardano?.[walletType]
         : undefined;
+    let Lucid;
+    if ("LucidCardano" in window) {
+      // @ts-ignore
+      Lucid = window.LucidCardano.Lucid;
+      console.log("Using Lucid from window", Lucid);
+    } else {
+      Lucid = (await import("lucid-cardano")).Lucid;
+    }
     const walletApi = await wallet?.enable();
-    console.log("api", walletApi);
     const provider = new JamOnBreadProvider(
       `https://api.jamonbread.io/api/lucid`
     );
+    // @ts-ignore
     const lucid = await Lucid.new(provider, "Mainnet");
     lucid.selectWallet(walletApi as WalletApi);
     const address = await lucid.wallet.address();

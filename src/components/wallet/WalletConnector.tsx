@@ -69,10 +69,6 @@ export const WalletConnector: React.FC = () => {
     }
   }, [address, walletApi]);
 
-  React.useLayoutEffect(() => {
-    document.documentElement.setAttribute("jam-theme", "gray");
-  }, []);
-
   return (
     <>
       {showWalletModal && (

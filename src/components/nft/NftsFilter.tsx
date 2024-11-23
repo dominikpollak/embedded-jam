@@ -148,7 +148,7 @@ export const NftsFilter: React.FC<Props> = ({
     <>
       {content}
       <div
-        className={`bg-background duration-200 mb-6 ml-auto flex justify-end gap-4 ${
+        className={`bg-background text-text duration-200 mb-6 ml-auto flex justify-end gap-4 ${
           isTradeModalOpen ? "relative" : "sticky z-[3]"
         } w-full ${
           scrolled

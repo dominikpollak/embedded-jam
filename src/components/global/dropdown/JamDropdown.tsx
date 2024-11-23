@@ -138,7 +138,7 @@ export const JamDropdown: React.FC<Props> = ({
   );
 
   return (
-    <div style={style} className={`relative ${className}`}>
+    <div style={style} text-text className={`relative ${className}`}>
       <Field
         role="button"
         className="cursor-pointer"

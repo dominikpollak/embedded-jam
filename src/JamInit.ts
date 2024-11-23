@@ -23,7 +23,7 @@ export class Jam {
     this.root = reactRoot;
   }
 
-  render(component: React.FC) {
-    this.root.render(React.createElement(component));
+  render(component: React.FC, props: any) {
+    this.root.render(React.createElement(component, props));
   }
 }

@@ -29,6 +29,10 @@ export const CollectionItemsWithProvider: React.FC<Props> = ({
     [walletType]
   );
 
+  React.useLayoutEffect(() => {
+    document.documentElement.setAttribute("jam-theme", theme);
+  }, [theme]);
+
   React.useEffect(() => {
     tryReconnect(walletType, true);
   }, [walletType]);

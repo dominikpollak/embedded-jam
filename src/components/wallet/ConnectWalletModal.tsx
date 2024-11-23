@@ -2,7 +2,6 @@ import React from "react";
 import { browserName, isMobile, isSafari, isTablet } from "react-device-detect";
 import { SUPPORTED_WALLETS, walletInfos } from "../../constants/wallet";
 import { useConnectWallet } from "../../hooks/wallet/useConnectWallet";
-import { useWalletStore } from "../../stores/wallet/walletStore";
 import { WalletType } from "../../types/wallet";
 import Modal from "../global/Modal";
 import { SpinningLoader } from "../global/loading/SpinningLoader";
@@ -14,7 +13,6 @@ type Props = {
 
 const ConnectWalletModal: React.FC<Props> = ({ onClose }) => {
   const { connect } = useConnectWallet();
-  const { walletType } = useWalletStore();
   const [walletLoading, setWalletLoading] = React.useState(false);
   const [isMetamaskInstalled, setIsMetamaskInstalled] = React.useState(false);
   const [installedWallets, setInstalledWallets] = React.useState<WalletType[]>(
